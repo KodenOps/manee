@@ -3,6 +3,11 @@ import { ThemeProvider, useTheme } from 'next-themes';
 import SideBar from '@/components/sidebar/page';
 import Button from '@/components/Button';
 import InputField from '@/components/InputField';
+import CardTitle from '@/components/CardTitle';
+import { LuLayoutGrid } from 'react-icons/lu';
+import IconCard from '@/components/IconCard';
+import BeneCard from '@/components/BeneficiaryBox';
+
 const Page = () => {
 	return (
 		<ThemeProvider
@@ -20,8 +25,18 @@ const Page = () => {
 				<p className='my-2'></p>
 				<Button
 					text='Submit'
-					type='secondary'
+					type='primary'
 				/>
+				<p className='my-2'></p>
+				<CardTitle
+					title='Past Transactions'
+					IconName={LuLayoutGrid}
+				/>
+				<IconCard
+					IconName={LuLayoutGrid}
+					boxText='Transfer'
+				/>
+				<BeneCard boxText='Transfer' />
 			</div>
 		</ThemeProvider>
 	);
