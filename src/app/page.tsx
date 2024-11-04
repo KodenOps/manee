@@ -9,6 +9,7 @@ import IconCard from '@/components/IconCard';
 import BeneCard from '@/components/BeneficiaryBox';
 import HeaderSwitcher from '@/components/HeaderSwitcher';
 import SideNav from '@/components/SideNav';
+import AccountCard from '@/components/AccountCard';
 const Page = () => {
 	const { theme, setTheme } = useTheme();
 	return (
@@ -17,7 +18,7 @@ const Page = () => {
 			defaultTheme='system'>
 			<div className=' flex'>
 				<SideNav />
-				<div className='w-[400px] ml-[210px] px-[8px]'>
+				<div className='w-[400px] md:ml-[210px] px-[8px]'>
 					<p className='my-2'></p>
 					<InputField
 						type='password'
@@ -52,6 +53,7 @@ const Page = () => {
 						buttonText2='dark'
 						isFirst={false}
 					/>
+					<AccountCard />
 				</div>
 			</div>
 		</ThemeProvider>
