@@ -24,7 +24,7 @@ const AccountCard = ({
 					</h4>
 					<p className='md:font-bold font-normal md:text-lg text-sm tracking-widest flex items-center gap-2 text-[var(--primary-dark)] dark:text-[var(--whites)]'>
 						{accountNum}{' '}
-						<span className='text-sm font-mono'>
+						<span className='text-sm font-mono cursor-pointer'>
 							<FaRegCopy size={14} />
 						</span>
 					</p>
