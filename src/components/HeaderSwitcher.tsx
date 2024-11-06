@@ -24,7 +24,6 @@ const HeaderSwitcher = ({
 						className='leftMenu text-center bg-[var(--primary)] dark:bg-[var(--secondary-dark)] text-[var(--whites)] dark:text-[var(--primary-dark)] font-medium flex-1 h-full flex items-center justify-center'
 						onClick={() => {
 							setisFirstActive(true);
-							setTheme('light');
 						}}>
 						{buttonText1}
 					</button>
@@ -32,7 +31,6 @@ const HeaderSwitcher = ({
 						className='rightMenu text-center bg-[var(--whites)] font-medium text-[var(--text)] dark:bg-[var(--card-bg-dark)] dark:text-[var(--whites-dark)] flex-1 h-full flex items-center justify-center'
 						onClick={() => {
 							setisFirstActive(false);
-							setTheme('dark');
 						}}>
 						{buttonText2}
 					</button>
@@ -44,7 +42,6 @@ const HeaderSwitcher = ({
 							className='leftMenu text-center bg-[var(--whites)] font-medium text-[var(--text)] dark:bg-[var(--card-bg-dark)] dark:text-[var(--whites-dark)] flex-1 h-full flex items-center justify-center'
 							onClick={() => {
 								setisFirstActive(true);
-								setTheme('light');
 							}}>
 							{buttonText1}
 						</button>
@@ -52,7 +49,6 @@ const HeaderSwitcher = ({
 							className='rightMenu text-center bg-[var(--primary)] dark:bg-[var(--secondary-dark)] text-[var(--whites)] dark:text-[var(--primary-dark)] font-medium flex-1 h-full flex items-center justify-center'
 							onClick={() => {
 								setisFirstActive(false);
-								setTheme('dark');
 							}}>
 							{buttonText2}
 						</button>

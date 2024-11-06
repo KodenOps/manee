@@ -2,7 +2,7 @@ import React from 'react';
 interface inputType {
 	placeholder: string;
 	type: 'text' | 'password' | 'email' | 'number' | 'date';
-	withDesc: boolean;
+	withDesc?: boolean;
 	infoText?: string;
 }
 const InputField = ({ placeholder, type, withDesc, infoText }: inputType) => {
