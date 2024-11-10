@@ -12,7 +12,6 @@ const HeaderSwitcher = ({
 	buttonText1,
 	buttonText2,
 	isFirst = true,
-	action,
 }: buttonType) => {
 	const { theme, setTheme } = useTheme();
 	const [isFirstActive, setisFirstActive] = useState(isFirst);
