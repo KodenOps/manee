@@ -16,7 +16,7 @@ const HistoryDeets = ({
 	isSuccess,
 }: historytype) => {
 	return (
-		<div className='flex  md:justify-between justify-center items-center gap-4 w-full md:flex-row flex-col border-b-[1px] pb-[16px] border-[var(--greys)]'>
+		<div className='flex  md:justify-between justify-center items-center gap-4 w-full md:flex-row flex-col border-b-[1px] pb-[16px] border-[#a3a3a351]'>
 			<div className='left w-full md:px-[24px] px-[16px] mt-4 flex items-center gap-4'>
 				<div
 					className={`icon p-[8px] ${
