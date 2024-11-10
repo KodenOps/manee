@@ -12,6 +12,7 @@ import { GiPayMoney } from 'react-icons/gi';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
 import { TbMoneybag } from 'react-icons/tb';
+import History from '@/components/History';
 const Page = () => {
 	const showAlert = () => {
 		alert('button clicked');
@@ -36,7 +37,8 @@ const Page = () => {
 							accountType='Savings'
 						/>
 					</div>
-					<div className='w-full '>
+					<div className='w-full flex md:flex-row flex-col justify-between gap-2'>
+						{/* account transactions */}
 						<div className='md:w-[50%] w-full md:ml-[210px] px-[8px] mt-4 shadow-md pb-4'>
 							<CardTitle
 								title='Quick Transactions'
@@ -84,6 +86,10 @@ const Page = () => {
 									url='/interbank'
 								/>
 							</div>
+						</div>
+						{/* History section */}
+						<div className='md:w-[45%] w-full  px-[8px] mt-4 shadow-md pb-4 mr-[24px]'>
+							<History />
 						</div>
 					</div>
 				</div>
