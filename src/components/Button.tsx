@@ -10,7 +10,7 @@ const Button = ({ text, type = 'primary' }: ButtonProps) => {
 	const primaryStyles =
 		'bg-[var(--primary)] dark:bg-[var(--secondary-dark)] dark:text-[var(--primary-dark)] text-[var(--whites)]';
 	const secondaryStyles =
-		'dark:text-[var(--secondary-dark)] text-[var(--primary)] font-medium underline';
+		'dark:text-[var(--secondary-dark)] text-[var(--primary)] font-medium underline ';
 
 	return (
 		<button
