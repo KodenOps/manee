@@ -14,7 +14,6 @@ export default function RootLayout({
 		<html
 			lang='en'
 			className='light'
-			style={{ colorScheme: 'light' }}
 			suppressHydrationWarning>
 			<body>
 				<ThemeProvider

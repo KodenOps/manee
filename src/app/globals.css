@@ -22,3 +22,6 @@
 	--reds: #ff7657;
 	--disabled: #cfcfcf;
 }
+.whitespace-pre-line {
+	white-space: pre-line;
+}

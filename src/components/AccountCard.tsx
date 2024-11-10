@@ -16,8 +16,8 @@ const AccountCard = ({
 	accountType,
 }: accountInfoType) => {
 	return (
-		<div className='  md:h-[200px] h-[150px] rounded-md relative overflow-hidden flex-1 md:w-full w-[80%]'>
-			<div className='content  z-[100] flex flex-col md:gap-0 gap-3 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px]'>
+		<div className='  md:h-[200px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full '>
+			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px]'>
 				<div className='top z-[20] md:px-0 px-4 '>
 					<h4 className='md:text-[18px] text-[12px] font-semibold dark:text-[var(--accents)]'>
 						{accountType}
@@ -39,7 +39,7 @@ const AccountCard = ({
 							${accountBal.toLocaleString()}
 						</p>
 						<div className='flex justify-center items-end flex-col gap-[5px] w-full pr-4 cursor-pointer'>
-							<span className='hidden text-sm md:flex justify-center'>
+							<span className='hidden text-sm md:flex items-center gap-2 justify-center'>
 								Hide <IoEyeOff size={20} />
 							</span>
 							<span className='md:hidden text-sm ml-2 flex justify-center'>
@@ -49,7 +49,7 @@ const AccountCard = ({
 					</div>
 				</div>
 			</div>
-			<div className='dark:bg-[#2a3f80f6] bg-[#aee9eb]  absolute h-[100vh] z-[0] top-0	 overflow-hidden'>
+			<div className='dark:bg-[#2a3f80f6] bg-[#aee9eb]  absolute h-[100%] z-[0] top-0	 overflow-hidden'>
 				<div className='top-0  h-full w-full object-cover bottom-0 scale-150 float-start  opacity-20 '>
 					<Image
 						src={design}
