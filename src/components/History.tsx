@@ -41,6 +41,27 @@ const History = () => {
 					IconName={IoMdTrendingDown}
 					isSuccess={true}
 				/>
+				<HistoryDeets
+					headertext='Transfer Failed'
+					time='24 Nov'
+					parag='Transfer of #4,500 to 2011032044 was failed...'
+					IconName={IoMdTrendingUp}
+					isSuccess={false}
+				/>
+				<HistoryDeets
+					headertext='Credit Alert'
+					time='10 Aug'
+					parag='#42,700 was successfully received from Mi...'
+					IconName={IoMdTrendingDown}
+					isSuccess={true}
+				/>
+				<HistoryDeets
+					headertext='Transfer Failed'
+					time='24 Nov'
+					parag='Transfer of #4,500 to 2011032044 was failed...'
+					IconName={IoMdTrendingUp}
+					isSuccess={false}
+				/>
 			</div>
 		</div>
 	);
