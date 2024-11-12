@@ -25,14 +25,14 @@ const HistoryDeets = ({
 					<IconName size={18} />
 				</div>
 				<div className='texts '>
-					<h4 className='text-[var(--text)] dark:text-[var(--whites-dark)] text-md font-medium'>
+					<h4 className='text-[var(--text)] dark:text-[var(--whites-dark)] md:text-md text-sm  font-medium'>
 						{headertext} -{' '}
 						<span className='text-[#666363] dark:text-[#00CCCC] text-[12px]'>
 							{' '}
 							{time}{' '}
 						</span>
 					</h4>
-					<p className='w-full text-sm text-[var(--greys)] dark:text-[#F3EAEA] font-thin'>
+					<p className='w-full md:text-sm text-[12px] text-[var(--greys)] dark:text-[#F3EAEA] font-thin'>
 						{parag}
 					</p>
 				</div>
