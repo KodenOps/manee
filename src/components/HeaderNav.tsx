@@ -7,8 +7,9 @@ import { FaUserCircle } from 'react-icons/fa';
 import { useTheme } from 'next-themes';
 import { LuSun } from 'react-icons/lu';
 import { IoMenu } from 'react-icons/io5';
-
+import { GridLoader, RiseLoader } from 'react-spinners';
 import Logo from './Logo';
+import { GiTakeMyMoney } from 'react-icons/gi';
 
 const HeaderNav = () => {
 	const { theme, setTheme } = useTheme();
@@ -21,12 +22,17 @@ const HeaderNav = () => {
 	if (!mounted) {
 		return (
 			// placeholder before the client side updates with the server side
-			<div className='flex md:justify-end justify-between w-full gap-16 md:px-[40px] pr-[16px] py-[24px] shadow-md bg-[var(--whites)] dark:bg-[var(--primary-dark)] sticky top-0 z-[50]'>
-				<div className='logo md:hidden'>
-					<Logo />
-				</div>
-				<div className='md:hidden text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-					<IoMenu size={32} />
+			<div className='flex flex-col justify-center items-center h-full w-full bg-[var(--whites)] dark:bg-[var(--primary-dark)] fixed top-0 z-[500] overflow-hidden'>
+				<div className='flex flex-col items-center justify-center text-center'>
+					<div className='text-[var(--primary)] dark:text-[var(--secondary-dark)] flex items-center  px-[24px] gap-[5px]'>
+						<span className='text-[40px] md:text-[100px]'>
+							<GiTakeMyMoney />
+						</span>
+						<h2 className='font-bold text-[40px] md:text-[100px]'>MANEE</h2>
+					</div>
+					<p className='text-[24px] md:text-[30px]'>
+						Swift like a bullet, Realible like an Instinct.
+					</p>
 				</div>
 			</div>
 		); // Ensures the component only renders on the client
