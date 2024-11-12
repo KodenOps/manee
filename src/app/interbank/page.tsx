@@ -1,7 +1,9 @@
 'use client';
 import AccountCard from '@/components/AccountCard';
+import BeneCard from '@/components/BeneficiaryBox';
 import HeaderNav from '@/components/HeaderNav';
 import HeaderSwitcher from '@/components/HeaderSwitcher';
+import History from '@/components/History';
 import SideNav from '@/components/SideNav';
 import { ThemeProvider } from 'next-themes';
 import React from 'react';
@@ -11,11 +13,11 @@ const Interbank = () => {
 		<ThemeProvider
 			attribute='class'
 			defaultTheme='system'>
-			<div className=' flex'>
+			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px]'>
 				<SideNav />
-				<div className='mainBody w-full md:ml-[210px]  ml-0'>
+				<div className='w-full '>
 					<HeaderNav />
-					<div className='accountCards shadow-md  md:px-[24px] px-[8px]   gap-2 py-[16px] flex items-center md:justify-start justify-between'>
+					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between'>
 						<AccountCard
 							accountBal={2039123}
 							accountNum='2034320099'
@@ -27,13 +29,24 @@ const Interbank = () => {
 							accountType='Savings'
 						/>
 					</div>
-					<div className='mainTransSection px-[8px] md:px-[24px] mt-[24px]'>
+
+					<div className='mainTransSection px-[8px] md:ml-[210px] md:px-[24px]  flex-1 ml-0 md:w-[45%] w-full '>
 						<HeaderSwitcher
 							buttonText1='Interbank Transfer'
 							buttonText2='Intrabank Transfer'
 							isFirst={true}
 						/>
+						<div className='beneficiary mt-4 flex items-center justify-start overflow-x-scroll gap-4 py-4'>
+							<BeneCard boxText='John, F' />
+							<BeneCard boxText='Okoro, B' />
+							<BeneCard boxText='Jessica, W' />
+							<BeneCard boxText='John, A' />
+							<BeneCard boxText='Okoro, B' />
+							<BeneCard boxText='Jessica, W' />
+							<BeneCard boxText='John, A' />
+						</div>
 					</div>
+					{/* History section */}
 				</div>
 				{/* end of body */}
 			</div>

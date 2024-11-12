@@ -7,7 +7,7 @@ import { IoMdTrendingDown } from 'react-icons/io';
 
 const History = () => {
 	return (
-		<div>
+		<div className='w-full'>
 			<CardTitle
 				title='Past Transactions'
 				IconName={GiOpenBook}
