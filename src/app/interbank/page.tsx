@@ -30,13 +30,13 @@ const Interbank = () => {
 						/>
 					</div>
 
-					<div className='mainTransSection px-[8px] md:ml-[210px] md:px-[24px]  flex-1 ml-0 md:w-[45%] w-full '>
+					<div className='mainTransSection px-[8px] md:ml-[210px] md:px-[24px]  flex-1 ml-0 md:w-[45%] w-full'>
 						<HeaderSwitcher
 							buttonText1='Interbank Transfer'
 							buttonText2='Intrabank Transfer'
 							isFirst={true}
 						/>
-						<div className='beneficiary mt-4 flex items-center justify-start overflow-x-scroll gap-4 py-4'>
+						<div className='beneficiary mt-4 flex items-center justify-start overflow-x-scroll gap-4 py-4 scrollbar-hidden'>
 							<BeneCard boxText='John, F' />
 							<BeneCard boxText='Okoro, B' />
 							<BeneCard boxText='Jessica, W' />
