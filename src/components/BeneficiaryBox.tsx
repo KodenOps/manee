@@ -10,7 +10,7 @@ const BeneCard = ({ boxText }: BeneCardType) => {
 			<span className='text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
 				<FaUserCircle size={32} />
 			</span>
-			<p className='font-medium text-md text-[var(--text)] dark:text-[var(--whites-dark)] text-center w-full'>
+			<p className='font-medium md:text-md text-sm text-[var(--text)] dark:text-[var(--whites-dark)] text-center w-full'>
 				{boxText}
 			</p>
 		</div>

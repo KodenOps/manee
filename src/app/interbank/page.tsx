@@ -1,9 +1,11 @@
 'use client';
 import AccountCard from '@/components/AccountCard';
 import BeneCard from '@/components/BeneficiaryBox';
+import CardTitle from '@/components/CardTitle';
 import HeaderNav from '@/components/HeaderNav';
 import HeaderSwitcher from '@/components/HeaderSwitcher';
 import History from '@/components/History';
+import InterbankForm from '@/components/InterbankForm';
 import SideNav from '@/components/SideNav';
 import { ThemeProvider } from 'next-themes';
 import React from 'react';
@@ -36,14 +38,21 @@ const Interbank = () => {
 							buttonText2='Intrabank Transfer'
 							isFirst={true}
 						/>
-						<div className='beneficiary mt-4 flex items-center justify-start overflow-x-scroll gap-4 py-4 scrollbar-hidden'>
-							<BeneCard boxText='John, F' />
-							<BeneCard boxText='Okoro, B' />
-							<BeneCard boxText='Jessica, W' />
-							<BeneCard boxText='John, A' />
-							<BeneCard boxText='Okoro, B' />
-							<BeneCard boxText='Jessica, W' />
-							<BeneCard boxText='John, A' />
+						<div className='mt-2'>
+							<CardTitle title='Beneficiary' />
+							<div className='beneficiary flex items-center justify-start overflow-x-scroll gap-4 py-4 scrollbar-hidden'>
+								<BeneCard boxText='John, F' />
+								<BeneCard boxText='Okoro, B' />
+								<BeneCard boxText='Jessica, W' />
+								<BeneCard boxText='John, A' />
+								<BeneCard boxText='Okoro, B' />
+								<BeneCard boxText='Jessica, W' />
+								<BeneCard boxText='John, A' />
+							</div>
+						</div>
+
+						<div>
+							<InterbankForm />
 						</div>
 					</div>
 					{/* History section */}
