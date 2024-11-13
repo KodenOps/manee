@@ -4,7 +4,7 @@ import BeneCard from '@/components/BeneficiaryBox';
 import CardTitle from '@/components/CardTitle';
 import HeaderNav from '@/components/HeaderNav';
 import InterbankForm from '@/components/InterbankForm';
-import IntrabankForm from '@/components/IntrabankForm';
+import IntrabankForm from '@/components/Intrabankforms';
 import SideNav from '@/components/SideNav';
 import { ThemeProvider } from 'next-themes';
 import React, { useState } from 'react';
