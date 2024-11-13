@@ -16,7 +16,7 @@ const Button = ({ text, type = 'primary' }: ButtonProps) => {
 		<button
 			className={`${
 				type === 'primary' ? primaryStyles : secondaryStyles
-			}  md:py-[14px] py-[8px] w-full rounded-[5px] font-normal dark:font-medium`}>
+			}  md:py-[14px] py-[12px] w-full rounded-[5px] font-normal dark:font-medium`}>
 			{text}
 		</button>
 	);
