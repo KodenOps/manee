@@ -40,7 +40,7 @@ const Interbank = () => {
 						/>
 						<div className='mt-2'>
 							<CardTitle title='Beneficiary' />
-							<div className='beneficiary flex items-center justify-start overflow-x-scroll gap-4 py-4 scrollbar-hidden'>
+							<div className='beneficiary flex items-center justify-start overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
 								<BeneCard boxText='John, F' />
 								<BeneCard boxText='Okoro, B' />
 								<BeneCard boxText='Jessica, W' />
