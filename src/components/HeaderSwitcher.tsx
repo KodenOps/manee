@@ -6,30 +6,28 @@ interface buttonType {
 	buttonText1: string;
 	buttonText2: string;
 	isFirst: boolean;
-	action?: () => void;
+	actions: (isFirst: boolean) => void;
 }
 const HeaderSwitcher = ({
 	buttonText1,
 	buttonText2,
-	isFirst = true,
+	isFirst,
+	actions,
 }: buttonType) => {
-	const { theme, setTheme } = useTheme();
-	const [isFirstActive, setisFirstActive] = useState(isFirst);
 	return (
 		<div>
-			{isFirstActive ? (
+			{isFirst ? (
 				<div className='w-full shadow-md flex items-center justify-center md:h-[60px] h-[60px] rounded-sm'>
 					<button
 						className='leftMenu text-center bg-[var(--primary)] dark:bg-[var(--secondary-dark)] text-[var(--whites)] dark:text-[var(--primary-dark)] font-medium flex-1 h-full flex items-center md:text-lg text-[12px] justify-center'
-						onClick={() => {
-							setisFirstActive(true);
-						}}>
+						onClick={() => actions(isFirst)}>
 						{buttonText1}
 					</button>
 					<button
 						className='rightMenu text-center bg-[var(--whites)] font-medium text-[var(--text)] dark:bg-[var(--card-bg-dark)] dark:text-[var(--whites-dark)] flex-1 h-full flex items-center justify-center md:text-lg text-[12px] '
 						onClick={() => {
-							setisFirstActive(false);
+							actions(isFirst);
+							console.log(isFirst);
 						}}>
 						{buttonText2}
 					</button>
@@ -40,15 +38,14 @@ const HeaderSwitcher = ({
 						<button
 							className='leftMenu text-center bg-[var(--whites)] font-medium text-[var(--text)] dark:bg-[var(--card-bg-dark)] dark:text-[var(--whites-dark)] flex-1 h-full flex items-center justify-center md:text-lg text-[12px] '
 							onClick={() => {
-								setisFirstActive(true);
+								actions(isFirst);
+								console.log(isFirst);
 							}}>
 							{buttonText1}
 						</button>
 						<button
 							className='rightMenu text-center bg-[var(--primary)] dark:bg-[var(--secondary-dark)] text-[var(--whites)] dark:text-[var(--primary-dark)] font-medium flex-1 h-full flex items-center md:text-lg text-[12px]  justify-center'
-							onClick={() => {
-								setisFirstActive(false);
-							}}>
+							onClick={() => actions(isFirst)}>
 							{buttonText2}
 						</button>
 					</div>

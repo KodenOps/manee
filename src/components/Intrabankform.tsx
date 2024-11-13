@@ -2,7 +2,7 @@ import React from 'react';
 import InputField from './InputField';
 import Button from './Button';
 
-const InterbankForm = () => {
+const IntrabankForm = () => {
 	return (
 		<form className='flex flex-col gap-4 mt-4'>
 			<InputField
@@ -10,13 +10,6 @@ const InterbankForm = () => {
 				type='text'
 				withDesc={true}
 				infoText='...'
-				patterns='\d*'
-			/>
-			<InputField
-				placeholder='Bank Name'
-				type='text'
-				withDesc={false}
-				infoText=''
 				patterns='\d*'
 			/>
 			<InputField
@@ -41,4 +34,4 @@ const InterbankForm = () => {
 	);
 };
 
-export default InterbankForm;
+export default IntrabankForm;
