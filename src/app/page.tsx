@@ -65,7 +65,7 @@ const Page = () => {
 									<IconCard
 										IconName={FiPhoneCall}
 										boxText={`Buy \n Airtime`}
-										url='/interbank'
+										url='/pay-bills'
 									/>
 									<IconCard
 										IconName={RiWifiFill}
