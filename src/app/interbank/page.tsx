@@ -30,7 +30,7 @@ const Interbank = () => {
 						/>
 						<AccountCard
 							accountBal={2039123}
-							accountNum='2033223344'
+							accountNum='2033223354'
 							accountType='Savings'
 						/>
 					</div>
