@@ -51,7 +51,7 @@ const AccountCard = ({
 								{balVisible ? <IoEyeOff size={20} /> : <IoEye size={20} />}
 							</span>
 							<span className='md:hidden text-sm ml-2 flex justify-center'>
-								<IoEyeOff size={16} />
+								{balVisible ? <IoEyeOff size={16} /> : <IoEye size={16} />}
 							</span>
 						</button>
 						{/* End of hide toggle button */}
