@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaRegCopy } from 'react-icons/fa6';
 import { IoEyeOff } from 'react-icons/io5';
 import design from '../../public/assets/bg.png';
@@ -15,6 +15,7 @@ const AccountCard = ({
 	accountNum,
 	accountType,
 }: accountInfoType) => {
+	const [balVisible, setbalVisible] = useState(false);
 	return (
 		<div className='  md:h-[200px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full '>
 			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px]'>
@@ -36,16 +37,22 @@ const AccountCard = ({
 
 					<div className='flex flex-row md:w-full w-full'>
 						<p className='md:text-[30px] text-[18px] tracking-widest font-bold text-left text-[var(--primary-dark)] dark:text-[var(--whites)] '>
-							${accountBal.toLocaleString()}
+							{balVisible === true
+								? `$${accountBal.toLocaleString()}`
+								: 'xxx,xxx'}
 						</p>
-						<div className='flex justify-center items-end flex-col gap-[5px] w-full pr-4 cursor-pointer'>
+						{/* hide button */}
+						<button
+							className='flex justify-center items-end flex-col gap-[5px] w-full pr-4 cursor-pointer'
+							onClick={() => setbalVisible(!balVisible)}>
 							<span className='hidden text-sm md:flex items-center gap-2 justify-center'>
 								Hide <IoEyeOff size={20} />
 							</span>
 							<span className='md:hidden text-sm ml-2 flex justify-center'>
 								<IoEyeOff size={16} />
 							</span>
-						</div>
+						</button>
+						{/* End of hide toggle button */}
 					</div>
 				</div>
 			</div>
