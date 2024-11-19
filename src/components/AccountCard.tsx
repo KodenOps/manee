@@ -3,6 +3,7 @@ import { FaRegCopy } from 'react-icons/fa6';
 import { IoEyeOff } from 'react-icons/io5';
 import design from '../../public/assets/bg.png';
 import Image from 'next/image';
+import { IoEyeSharp } from 'react-icons/io5';
 
 interface accountInfoType {
 	accountType: string;
@@ -46,7 +47,8 @@ const AccountCard = ({
 							className='flex justify-center items-end flex-col gap-[5px] w-full pr-4 cursor-pointer'
 							onClick={() => setbalVisible(!balVisible)}>
 							<span className='hidden text-sm md:flex items-center gap-2 justify-center'>
-								Hide <IoEyeOff size={20} />
+								{balVisible ? 'Hide' : 'Show'}{' '}
+								{balVisible ? <IoEyeOff size={20} /> : <IoEyeSharp size={20} />}
 							</span>
 							<span className='md:hidden text-sm ml-2 flex justify-center'>
 								<IoEyeOff size={16} />
