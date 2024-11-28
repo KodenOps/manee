@@ -13,7 +13,7 @@ export default function NotFound() {
 			</div>
 			<div className='bg-[var(--primary-dark)] h-full '>
 				<HeaderNav />
-				<div className='pl-[210px] md:mt-[32px] flex md:flex-row  flex-col items-center justify-center   w-full'>
+				<div className='md:pl-[210px] md:mt-[32px] mt-[48px] flex md:flex-row  flex-col items-center justify-center   w-full'>
 					<div className='md:w-[50%] w-[100%]'>
 						<Image
 							src={error}
