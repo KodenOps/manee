@@ -7,13 +7,16 @@ import { FaUserCircle } from 'react-icons/fa';
 import { useTheme } from 'next-themes';
 import { LuSun } from 'react-icons/lu';
 import { IoMenu } from 'react-icons/io5';
-import { GridLoader, RiseLoader } from 'react-spinners';
+import { IoCloseSharp } from 'react-icons/io5';
 import Logo from './Logo';
 import { GiTakeMyMoney } from 'react-icons/gi';
+import SideNav from './SideNav';
+import SideBtns from './SideBtns';
 
 const HeaderNav = () => {
 	const { theme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
+	const [menuUp, setmenuUp] = useState(true);
 
 	useEffect(() => {
 		setMounted(true);
@@ -88,8 +91,33 @@ const HeaderNav = () => {
 			<div className='logo md:hidden'>
 				<Logo />
 			</div>
-			<div className='md:hidden text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-				<IoMenu size={32} />
+			<div
+				className='md:hidden text-[var(--primary)] dark:text-[var(--secondary-dark)] z-20'
+				onClick={() => setmenuUp(!menuUp)}>
+				{menuUp ? (
+					<IoMenu size={32} />
+				) : (
+					<IoCloseSharp
+						size={32}
+						color='#ff7657'
+					/>
+				)}
+			</div>
+			{/* mobile side nav popup */}
+			<div
+				className={
+					!menuUp
+						? `w-screen bg-[#333333c3] h-screen top-0 right-0 -z-[100] absolute `
+						: 'hidden'
+				}>
+				<div
+					className={
+						!menuUp
+							? `w-[60%] h-screen top-0 right-0 -z-[100] absolute bg-[var(--primary-dark)] pt-[80px]`
+							: 'hidden'
+					}>
+					<SideBtns />
+				</div>
 			</div>
 		</div>
 	);
