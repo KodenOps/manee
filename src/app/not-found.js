@@ -7,7 +7,7 @@ import HeaderNav from '@/components/HeaderNav';
 import SideNav from '@/components/SideNav';
 export default function NotFound() {
 	return (
-		<div className='w-full h-screen flex items-start justify-between'>
+		<div className='w-full h-screen flex items-start justify-between overflow-y-hidden'>
 			<div className='md:block hidden'>
 				<SideNav />
 			</div>
