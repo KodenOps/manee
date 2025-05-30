@@ -115,7 +115,7 @@ const Interbank = () => {
 														fullName: beneficiary.fullName,
 														bankName: beneficiary.bankName,
 														accountNumber: beneficiary.accountNumber,
-													});
+													}); 
 													console.log(beneficiary);
 												}}>
 												<span className='text-[var(--primary)] dark:text-[var(--secondary-dark)]'>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import InputField from './InputField';
 import Button from './Button';
 import { BsCaretDown } from 'react-icons/bs';
 import { NigeriaBanks } from '@/data/BankDb';
@@ -10,23 +9,26 @@ interface Bank {
 	fullName: string;
 	shortName: string;
 }
+
 interface Beneficiary {
 	id: string;
-	shortName: string | null; // Short name can be null if not provided
+	shortName: string | null;
 	fullName: string;
 	accountNumber: string;
 	bankName: string;
 }
 
 const InterbankForm = (props: Beneficiary) => {
-	const [accNum, setaccNum] = useState('');
-	const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+	const [accNum, setaccNum] = useState(props.accountNumber || '');
+	const [selectedBank, setSelectedBank] = useState<Bank | null>(
+		NigeriaBanks.find((bank) => bank.fullName === props.bankName) || null
+	);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [narrations, setnarrations] = useState<string>('');
 	const [amount, setAmount] = useState<string>(''); // Formatted amount for display
 	const [rawAmount, setRawAmount] = useState<number>(0.0); // Raw amount for calculation
 	const [charges, setCharges] = useState<number>(0); // Charges calculated
-	const [fullName, setFullName] = useState<string>(''); // Store the fetched user name
+	const [fullName, setFullName] = useState<string>(props.fullName || ''); // Store the fetched user name
 
 	const MAX_AMOUNT = 5000000; // Maximum amount allowed
 
@@ -112,6 +114,15 @@ const InterbankForm = (props: Beneficiary) => {
 		}
 	}, [accNum, selectedBank]);
 
+	// Effect to update fields when props change (e.g., when a beneficiary is clicked)
+	useEffect(() => {
+		setaccNum(props.accountNumber || '');
+		setSelectedBank(
+			NigeriaBanks.find((bank) => bank.fullName === props.bankName) || null
+		);
+		setFullName(props.fullName || '');
+	}, [props]);
+
 	return (
 		<form className='flex flex-col gap-4 mt-4 w-full'>
 			{/* Bank Selection */}
@@ -161,7 +172,7 @@ const InterbankForm = (props: Beneficiary) => {
 					<input
 						type='text'
 						placeholder='Enter Account Number'
-						value={accNum || props.accountNumber}
+						value={accNum}
 						pattern='\d*'
 						maxLength={10}
 						className='input-style'
@@ -174,7 +185,13 @@ const InterbankForm = (props: Beneficiary) => {
 						}}
 					/>
 				</div>
-				<p>{fullName || props.fullName}</p>
+				<p>
+					{fullName ||
+						(selectedBank?.fullName === props.bankName &&
+						accNum === props.accountNumber
+							? props.fullName
+							: '')}
+				</p>
 			</div>
 
 			{/* Amount Field */}
@@ -192,8 +209,8 @@ const InterbankForm = (props: Beneficiary) => {
 				<p>Charges: NGN {charges ? charges.toLocaleString() : 0}</p>{' '}
 				{/* Display charges with formatting */}
 			</div>
-			{/* narration */}
 
+			{/* Narration */}
 			<div className='w-full '>
 				{narrations.length > 0 && <p className='ml-2 mb-2'>Narrations</p>}
 				<textarea
