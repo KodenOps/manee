@@ -8,7 +8,7 @@ export const userAccounts = [
 	{
 		id: 'D5E6F7G8',
 		fullName: 'Ngozi Adebayo',
-		accountNumber: '9457310203',
+		accountNumber: '8345201851',
 		bankName: 'Zenith Bank',
 	},
 	{

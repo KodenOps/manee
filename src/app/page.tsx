@@ -51,7 +51,7 @@ const Page = () => {
 									title='Quick Transactions'
 									IconName={LuLayoutGrid}
 								/>
-								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
+								<div className='linkList mt-4 flex items-center md:justify-start px-2 justify-center md:gap-4 gap-2 w-full flex-wrap'>
 									<IconCard
 										IconName={FaMoneyBillTransfer}
 										boxText='Intrabank Transfer'

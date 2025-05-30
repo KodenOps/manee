@@ -10,8 +10,15 @@ interface Bank {
 	fullName: string;
 	shortName: string;
 }
+interface Beneficiary {
+	id: string;
+	shortName: string | null; // Short name can be null if not provided
+	fullName: string;
+	accountNumber: string;
+	bankName: string;
+}
 
-const InterbankForm = () => {
+const InterbankForm = (props: Beneficiary) => {
 	const [accNum, setaccNum] = useState('');
 	const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
 	const [searchTerm, setSearchTerm] = useState<string>('');
@@ -114,7 +121,7 @@ const InterbankForm = () => {
 					<input
 						type='text'
 						placeholder='Search or Select Bank'
-						value={searchTerm}
+						value={searchTerm || props.bankName}
 						className='bg-transparent outline-none h-full w-full placeholder:text-[var(--disabled)] focus:border-[var(--primary)] focus:outline-none dark:focus:border-[var(--inputborder)]'
 						onChange={(e) => {
 							setSearchTerm(e.target.value);
@@ -154,7 +161,7 @@ const InterbankForm = () => {
 					<input
 						type='text'
 						placeholder='Enter Account Number'
-						value={accNum}
+						value={accNum || props.accountNumber}
 						pattern='\d*'
 						maxLength={10}
 						className='input-style'
@@ -167,7 +174,7 @@ const InterbankForm = () => {
 						}}
 					/>
 				</div>
-				<p>{fullName}</p>
+				<p>{fullName || props.fullName}</p>
 			</div>
 
 			{/* Amount Field */}

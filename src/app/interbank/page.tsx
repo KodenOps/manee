@@ -9,9 +9,29 @@ import IntrabankForm from '@/components/Intrabankforms';
 import SideNav from '@/components/SideNav';
 import { ThemeProvider } from 'next-themes';
 import React, { useState } from 'react';
+import { beneficiaries } from '@/data/beneficiary';
+import { FaUserCircle } from 'react-icons/fa';
+
+// Define the type for userBankInfo
+interface UserBankInfo {
+	id: string;
+	shortName: string;
+	fullName: string;
+	bankName: string;
+	accountNumber: string;
+}
 
 const Interbank = () => {
 	const [isinter, setisinter] = useState(true);
+
+	// Use the defined type for userBankInfo
+	const [userBankInfo, setuserBankInfo] = useState<UserBankInfo>({
+		id: '',
+		shortName: '',
+		fullName: '',
+		bankName: '',
+		accountNumber: '',
+	});
 	function toggleSwitcher(isinter: boolean) {
 		setisinter(!isinter);
 	}
@@ -81,19 +101,46 @@ const Interbank = () => {
 								)}
 							</div>
 							<div className='mt-2'>
-								<CardTitle title='Beneficiary' />
+								<CardTitle title='Beneficiaries' />
 								<div className='beneficiary flex items-center justify-start overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
-									<BeneCard boxText='John, F' />
-									<BeneCard boxText='Okoro, B' />
-									<BeneCard boxText='Jessica, W' />
-									<BeneCard boxText='John, A' />
-									<BeneCard boxText='Okoro, B' />
-									<BeneCard boxText='Jessica, W' />
-									<BeneCard boxText='John, A' />
+									{beneficiaries.map((beneficiary) => {
+										return (
+											<div
+												key={beneficiary.id}
+												className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--card-bg-dark)]  min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer'
+												onClick={() => {
+													setuserBankInfo({
+														id: beneficiary.id,
+														shortName: beneficiary.shortName || '', // Handle null values
+														fullName: beneficiary.fullName,
+														bankName: beneficiary.bankName,
+														accountNumber: beneficiary.accountNumber,
+													});
+													console.log(beneficiary);
+												}}>
+												<span className='text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
+													<FaUserCircle size={32} />
+												</span>
+												<p className='font-medium md:text-md text-sm text-[var(--text)] dark:text-[var(--whites-dark)] text-center w-full'>
+													{beneficiary.shortName}
+												</p>
+											</div>
+										);
+									})}
 								</div>
 							</div>
 
-							{isinter ? <InterbankForm /> : <IntrabankForm />}
+							{isinter ? (
+								<InterbankForm
+									id={userBankInfo.id}
+									accountNumber={userBankInfo.accountNumber}
+									shortName={userBankInfo.shortName}
+									fullName={userBankInfo.fullName}
+									bankName={userBankInfo.bankName}
+								/>
+							) : (
+								<IntrabankForm />
+							)}
 						</div>
 						{/* History section */}
 						<div className='pb-8 shadow-md w-full pr-[16px] md:block hidden'>
