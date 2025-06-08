@@ -1,3 +1,4 @@
+'use client';
 import { useUser } from '@stackframe/stack';
 import React, { useState } from 'react';
 
