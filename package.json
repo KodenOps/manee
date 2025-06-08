@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@stackframe/stack": "^2.8.12",
+		"@stackframe/stack-sc": "^2.8.12",
 		"bcryptjs": "^3.0.2",
 		"jsonwebtoken": "^9.0.2",
 		"next": "15.0.2",
