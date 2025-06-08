@@ -98,19 +98,20 @@ const InterbankForm = (props: Beneficiary) => {
 	// Effect to check account name when account number is complete
 	useEffect(() => {
 		if (accNum.length === 10 && selectedBank) {
+			// Check if both account number and bank name match
 			const matchedAccount = userAccounts.find(
 				(account) =>
 					account.accountNumber === accNum &&
-					account.bankName === selectedBank.fullName
+					account.bankName === selectedBank.fullName // Include bank name in the logic
 			);
 
 			if (matchedAccount) {
-				setFullName(matchedAccount.fullName);
+				setFullName(matchedAccount.fullName); // Set the full name if a match is found
 			} else {
-				setFullName('Account not found');
+				setFullName('Account not found'); // Show error if no match is found
 			}
 		} else {
-			setFullName(''); // Clear name if conditions are not met
+			setFullName(''); // Clear the name if conditions are not met
 		}
 	}, [accNum, selectedBank]);
 

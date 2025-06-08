@@ -1,4 +1,6 @@
 import '@/app/globals.css';
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import { ThemeProvider } from '../../theme-provider';
 export const metadata = {
 	title: 'Manee',
@@ -15,13 +17,13 @@ export default function RootLayout({
 			lang='en'
 			className='light'
 			suppressHydrationWarning>
-			<body>
+			<body><StackProvider app={stackServerApp}><StackTheme>
 				<ThemeProvider
 					attribute='class'
 					defaultTheme='system'>
 					{children}
 				</ThemeProvider>
-			</body>
+			</StackTheme></StackProvider></body>
 		</html>
 	);
 }
