@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { query } from '@/utils/db';
+// import { query } from '@/utils/db';
 import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req, res) {
