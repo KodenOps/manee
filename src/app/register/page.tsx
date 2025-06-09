@@ -3,7 +3,9 @@ import Button from '@/components/Button';
 import InputField from '@/components/InputField';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { cookies } from 'next/headers';
 import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
+
 const page = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -11,21 +13,47 @@ const page = () => {
 	const [Error, setError] = useState('');
 	const router = useRouter();
 
-	const handleSubmit = async (event) => {
-		setError(''); // Reset error message
-		const { data, error } = await supabase.auth.signUp({
-			email: email,
-			password: password,
+	const handleSubmit = async () => {
+		setError(''); // Reset error
+		const normalizedEmail = email.trim().toLowerCase();
+
+		const res = await fetch('/api/auth/check-user', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ email }),
 		});
-		if (error) {
-			setError(error.message);
+
+		const result = await res.json();
+
+		if (result.exists) {
+			setError('This email is already registered. Please log in instead.');
 			return;
 		}
-		if (data.user) {
-			// Registration successful, redirect to login or home page
-			setError('Registration successful!  Proceed to login.');
-			console.log(error);
+
+		// If not registered, proceed with signup
+		const { data, error } = await supabase.auth.signUp({
+			email,
+			password,
+		});
+
+		if (error) {
+			if (error.message.toLowerCase().includes('user already registered')) {
+				setError(
+					'An account with this email already exists. Please log in instead.'
+				);
+			} else {
+				setError(error.message);
+			}
+			return;
 		}
+
+		if (data.user) {
+			setError('Registration successful! Please check your email to confirm.');
+		}
+
+		setEmail('');
+		setPassword('');
+		setConfirmPassword('');
 	};
 
 	return (

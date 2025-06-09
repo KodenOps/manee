@@ -3,6 +3,13 @@ import Link from 'next/link';
 import { BiUser, BiUserCircle } from 'react-icons/bi';
 import Logo from '@/components/Logo';
 import { GiTakeMyMoney } from 'react-icons/gi';
+import { cookies } from 'next/headers';
+export async function getUserSession() {
+	const cookieStore = await cookies();
+	const accessToken = cookieStore.get('sb-access-token')?.value;
+
+	// Use this token to verify user with Supabase Admin API or decode JWT
+}
 const page = () => {
 	return (
 		<section className='px-4 flex flex-col pt-[10%] min-h-screen bg-[var(--whites)] dark:bg-[var(--primary-dark)]'>
