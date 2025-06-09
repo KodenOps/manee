@@ -12,7 +12,6 @@ import Logo from './Logo';
 import { GiTakeMyMoney } from 'react-icons/gi';
 import SideNav from './SideNav';
 import SideBtns from './SideBtns';
-import { useUser } from '@stackframe/stack';
 import Image from 'next/image';
 
 interface HeaderNavProps {
@@ -20,7 +19,6 @@ interface HeaderNavProps {
 	email: string;
 }
 const HeaderNav = () => {
-	const user = useUser({ or: 'redirect' });
 	const { theme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 	const [menuUp, setmenuUp] = useState(true);
@@ -85,21 +83,13 @@ const HeaderNav = () => {
 			</div>
 			<div className='user md:flex hidden justify-start items-center gap-2 cursor-pointer'>
 				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-					<Image
-						src={user.profileImageUrl || ''}
-						alt='User Avatar'
-						className='rounded-full'
-						width={32}
-						height={32}
-					/>
+					<FaUserCircle size={32} />
 				</div>
 				<div className='nameemail'>
 					<p className='font-medium text-[var(--primary)] dark:text-[var(--whites-dark)]'>
-						{user.displayName ?? 'anon'}
+						Ayodele .F.
 					</p>
-					<p className='text-[12px] font-normal'>
-						{user.primaryEmail ?? 'anon'}
-					</p>
+					<p className='text-[12px] font-normal'>ayopumping@example.com</p>
 				</div>
 			</div>
 			{/* mobile navbar */}

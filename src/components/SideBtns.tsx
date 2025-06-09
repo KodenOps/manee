@@ -7,12 +7,8 @@ import { GiPayMoney } from 'react-icons/gi';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
 import { TbMoneybag } from 'react-icons/tb';
-import Image from 'next/image';
-import { useUser } from '@stackframe/stack';
 
 const SideBtns = () => {
-	const user = useUser({ or: 'redirect' });
-
 	return (
 		<div>
 			{/* FIRST LINK BOX */}
@@ -73,24 +69,14 @@ const SideBtns = () => {
 				/>
 			</div>
 			<div className='user  flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
-				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-					<Image
-						src={user.profileImageUrl || ''}
-						alt='User Avatar'
-						className='rounded-full'
-						width={32}
-						height={32}
-					/>
-				</div>
+				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'></div>
 				<div className='nameemail'>
 					<p className='font-medium text-[var(--primary)] dark:text-[var(--whites-dark)]'>
-						{user.displayName ?? 'anon'}ddd
+						Ayomide .F.
 					</p>
-					<p className='text-[12px] font-normal'>
-						{user.primaryEmail ?? 'anon'}
-					</p>
+					<p className='text-[12px] font-normal'>ayopumping@example.com</p>
 				</div>
-				<button onClick={() => user.signOut()}>Logout</button>
+				<button>Logout</button>
 			</div>
 		</div>
 	);

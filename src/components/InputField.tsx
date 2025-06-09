@@ -1,12 +1,16 @@
 'use client';
+import { on } from 'events';
 import React, { useState } from 'react';
 interface inputType {
 	placeholder: string;
 	type: 'text' | 'password' | 'email' | 'number' | 'date';
 	withDesc?: boolean;
+	value?: string;
 	infoText?: string;
 	patterns?: string;
 	minval?: number;
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
 const InputField = ({
 	placeholder,
@@ -15,6 +19,9 @@ const InputField = ({
 	infoText,
 	patterns,
 	minval,
+	onChange = () => {},
+	onClick = () => {},
+	value = '',
 }: inputType) => {
 	return (
 		<div className='flex flex-col items-end'>
@@ -23,10 +30,12 @@ const InputField = ({
 				placeholder={placeholder}
 				min={minval}
 				pattern={patterns}
-				className='w-full border-2 border-[var(--primary)] dark:border-[var(--inputborder)] rounded-[5px] px-[16px] md:py-[14px] py-[12px] placeholder:text-[var(--disabled)] focus:border-[var(--primary)] focus:outline-none dark:focus:border-[var(--inputborder)] bg-transparent'
-				onChange={(e) => {
-					console.log(e.target.value);
-				}}
+				value={value}
+				required
+				autoComplete='on'
+				className='w-full border-2 border-[var(--primary)] dark:border-[var(--inputborder)] rounded-[5px] px-[16px] md:py-[14px] py-[12px] placeholder:text-[var(--disabled)] focus:border-[var(--primary)] focus:outline-none dark:focus:border-[var(--inputborder)] bg-transparent mb-4'
+				onChange={onChange}
+				onClick={onClick}
 			/>
 			{withDesc === true ? <p>{infoText}</p> : null}
 		</div>
