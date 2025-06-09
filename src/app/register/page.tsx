@@ -3,13 +3,31 @@ import Button from '@/components/Button';
 import InputField from '@/components/InputField';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-
+import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
 const page = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [Error, setError] = useState('');
 	const router = useRouter();
+
+	const handleSubmit = async (event) => {
+		setError(''); // Reset error message
+		const { data, error } = await supabase.auth.signUp({
+			email: email,
+			password: password,
+		});
+		if (error) {
+			setError(error.message);
+			return;
+		}
+		if (data.user) {
+			// Registration successful, redirect to login or home page
+			setError('Registration successful!  Proceed to login.');
+			console.log(error);
+		}
+	};
+
 	return (
 		<section className='md:w-[40%] w-full px-6 mx-auto mt-[100px] bg-[var(--whites)] dark:bg-[var(--primary-dark)] p-8 rounded-lg shadow-md'>
 			<h2 className='md:text-2xl text-xl text-center pb-2 font-bold dark:text-[var(--secondary-dark)] text-[var(--primary-dark)] capitalize'>
@@ -19,7 +37,9 @@ const page = () => {
 				Welcome to Manee! Please fill in the details below to create your
 				account.
 			</p>
-			<form action=''>
+			<form
+				action=''
+				onSubmit={handleSubmit}>
 				<InputField
 					type='email' // Use "text" to allow formatting
 					placeholder='Enter Email'
@@ -39,7 +59,9 @@ const page = () => {
 					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
 				/>
-				<p className='text-sm text-center text-red-400 py-2'>{Error}</p>
+				{Error && (
+					<p className='text-sm text-center text-red-400 py-2'>{Error}</p>
+				)}
 				<Button
 					text='Submit'
 					type='primary'
@@ -54,10 +76,10 @@ const page = () => {
 						} else if (password !== confirmPassword) {
 							setError('Passwords do not match');
 						} else {
-							setError('');
+							handleSubmit();
 							// Here you would typically handle the registration logic
-							alert('Registration successful!');
-							router.push('/login'); // Redirect to login after successful registration
+							// alert('Registration successful!');
+							// router.push('/login'); // Redirect to login after successful registration
 						}
 					}}
 				/>
@@ -66,7 +88,6 @@ const page = () => {
 					type='secondary'
 					onclickfunction={(e) => {
 						e.preventDefault();
-
 						router.push('/login');
 					}}
 				/>

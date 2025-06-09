@@ -42,7 +42,6 @@ const page = () => {
 					type='secondary'
 					onclickfunction={(e) => {
 						e.preventDefault();
-
 						router.push('/register');
 					}}
 				/>
