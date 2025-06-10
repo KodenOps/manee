@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import supabase from '@/helper/supabaseClient';
 
 const page = () => {
+	supabase.auth.signOut();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [firstName, setfirstName] = useState('');
@@ -13,7 +14,7 @@ const page = () => {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [Error, setError] = useState('');
 	const router = useRouter();
-	
+
 	const generateAccountNumber = () => {
 		return Math.floor(1000000000 + Math.random() * 9000000000).toString();
 	};
