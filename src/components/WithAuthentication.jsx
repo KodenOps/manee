@@ -1,7 +1,6 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // ✅ Correct for App Router
+import { useRouter } from 'next/navigation'; 
 import supabase from '@/helper/supabaseClient';
 
 const WithAuthentication = (WrappedComponent) => {
@@ -17,7 +16,7 @@ const WithAuthentication = (WrappedComponent) => {
 					if (data?.session) {
 						setAuthenticated(true);
 					} else {
-						router.push('/login'); // ✅ Works in client context
+						router.push('/login'); 
 					}
 				} catch (err) {
 					console.error('Error fetching session:', err);
