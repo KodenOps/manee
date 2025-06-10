@@ -4,26 +4,78 @@ import CardTitle from '@/components/CardTitle';
 import HeaderNav from '@/components/HeaderNav';
 import SideNav from '@/components/SideNav';
 import SmIconCard from '@/components/SmallIconCard';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdFlashOn } from 'react-icons/md';
 import { PiTelevisionBold } from 'react-icons/pi';
+import { ThemeProvider } from 'next-themes';
+import supabase from '@/helper/supabaseClient';
+import WithAuthentication from '@/components/WithAuthentication';
 
-const PayBills = () => {
+type UserProfile = {
+	first_name: string;
+	last_name: string;
+	account_number: string;
+	balance: number;
+	email: string;
+};
+const page = () => {
+	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		const fetchProfile = async () => {
+			try {
+				const userResponse = await supabase.auth.getUser();
+				const user = userResponse.data.user;
+
+				if (user) {
+					const { data: profile, error } = await supabase
+						.from('profiles')
+						.select('first_name, last_name, account_number, balance')
+						.eq('id', user.id)
+						.single();
+
+					if (error) {
+						console.error('Error fetching profile:', error);
+					} else if (profile) {
+						setUserProfile({
+							...profile,
+							email: user.email || '',
+						});
+					} else {
+						console.warn('No profile found for user ID:', user.id);
+					}
+				}
+			} catch (error) {
+				console.error('Unexpected error fetching profile:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProfile();
+	}, []);
+	if (loading || !userProfile) {
+		return (
+			<ThemeProvider
+				attribute='class'
+				defaultTheme='system'>
+				<div className='text-center mt-20 text-gray-500 dark:text-gray-400'>
+					Loading profile...
+				</div>
+			</ThemeProvider>
+		);
+	}
 	return (
 		<div className='flex items-start justify-start w-full'>
 			<SideNav />
 			<div className='w-full md:ml-[210px] '>
-				<HeaderNav />
+				<HeaderNav userprofile={userProfile} />
 				<div className='accountCards shadow-md md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between'>
 					<AccountCard
-						accountBal={2039123}
-						accountNum='2034320099'
-						accountType='Current'
-					/>
-					<AccountCard
-						accountBal={2039123}
-						accountNum='2033228354'
+						accountBal={userProfile?.balance || 50000}
+						accountNum={userProfile?.account_number || '0000000000'}
 						accountType='Savings'
+						accountName={userProfile?.first_name + ' ' + userProfile?.last_name}
 					/>
 				</div>
 				<div className='flex justify-start items-start md:px-[24px]  w-full md:flex-row flex-col'>
@@ -111,4 +163,4 @@ const PayBills = () => {
 	);
 };
 
-export default PayBills;
+export default WithAuthentication(page);
