@@ -7,8 +7,12 @@ import { GiPayMoney } from 'react-icons/gi';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
 import { TbMoneybag } from 'react-icons/tb';
+import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
+import { useRouter } from 'next/navigation';
 
 const SideBtns = () => {
+	const router = useRouter();
+
 	return (
 		<div>
 			{/* FIRST LINK BOX */}
@@ -68,7 +72,7 @@ const SideBtns = () => {
 					url='/requests'
 				/>
 			</div>
-			<div className='user  flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
+			<div className='user md:hidden flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
 				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'></div>
 				<div className='nameemail'>
 					<p className='font-medium text-[var(--primary)] dark:text-[var(--whites-dark)]'>
@@ -78,6 +82,14 @@ const SideBtns = () => {
 				</div>
 				<button>Logout</button>
 			</div>
+			<button
+				onClick={async () => {
+					const { error } = await supabase.auth.signOut();
+					router.push('/login'); 
+					if (error) throw error; // Handle error if needed
+				}}>
+				Logout
+			</button>
 		</div>
 	);
 };

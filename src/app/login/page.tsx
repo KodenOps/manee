@@ -3,12 +3,40 @@ import Button from '@/components/Button';
 import InputField from '@/components/InputField';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
 
 const page = () => {
 	const [loginEmail, setloginEmail] = useState('');
 	const [LoginPassword, setLoginPassword] = useState('');
-	const [error, setError] = useState('');
+	const [Error, setError] = useState('');
 	const router = useRouter();
+
+	const handleSubmit = async () => {
+		setError(''); // Reset error
+		const normalizedEmail = loginEmail.trim().toLowerCase();
+
+		// If not registered, proceed with signup
+		const { data, error } = await supabase.auth.signInWithPassword({
+			email: normalizedEmail,
+			password: LoginPassword,
+		});
+		if (error) {
+			if (error.message.toLowerCase().includes('user not found')) {
+				setError('No account found with this email. Please register instead.');
+			} else {
+				setError(error.message);
+			}
+			return;
+		}
+		if (data.user) {
+			setError('Login successful! Redirecting to your dashboard...');
+			router.push('/dashboard'); // Redirect to dashboard or home page
+		}
+
+		setloginEmail('');
+		setLoginPassword('');
+	};
+
 	return (
 		<section className='md:w-[40%] w-full px-6 mx-auto mt-[100px] bg-[var(--whites)] dark:bg-[var(--primary-dark)] p-8 rounded-lg shadow-md'>
 			<h2 className='md:text-2xl text-xl text-center pb-2 font-bold dark:text-[var(--secondary-dark)] text-[var(--primary-dark)] capitalize'>
@@ -31,11 +59,20 @@ const page = () => {
 					value={LoginPassword}
 					onChange={(e) => setLoginPassword(e.target.value)}
 				/>
-
+				{Error && (
+					<p className='text-sm text-center text-red-400 py-2'>{Error}</p>
+				)}
 				<Button
 					text='Submit'
 					type='primary'
-					onclickfunction={() => alert('submit form?')}
+					onclickfunction={(e) => {
+						e.preventDefault();
+						if (LoginPassword.length <= 0 || loginEmail.length <= 0) {
+							setError('No field should be empty');
+						} else {
+							handleSubmit();
+						}
+					}}
 				/>
 				<Button
 					text="Don't have an account? Register Instead"

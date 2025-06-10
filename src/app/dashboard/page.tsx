@@ -18,7 +18,7 @@ import { FaRegEdit } from 'react-icons/fa';
 import { FaRegCreditCard } from 'react-icons/fa';
 import { GiUpgrade } from 'react-icons/gi';
 import { MdLock } from 'react-icons/md';
-
+import WithAuthentication from '@/components/WithAuthentication';
 const Page = () => {
 	const showAlert = () => {
 		alert('button clicked');
@@ -135,4 +135,4 @@ const Page = () => {
 	);
 };
 
-export default Page;
+export default WithAuthentication(Page);

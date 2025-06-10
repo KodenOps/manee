@@ -3,8 +3,7 @@ import Button from '@/components/Button';
 import InputField from '@/components/InputField';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { cookies } from 'next/headers';
-import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
+import supabase from '@/helper/supabaseClient';
 
 const page = () => {
 	const [email, setEmail] = useState('');
@@ -16,7 +15,6 @@ const page = () => {
 	const handleSubmit = async () => {
 		setError(''); // Reset error
 		const normalizedEmail = email.trim().toLowerCase();
-
 		const res = await fetch('/api/auth/check-user', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -35,7 +33,6 @@ const page = () => {
 			email,
 			password,
 		});
-
 		if (error) {
 			if (error.message.toLowerCase().includes('user already registered')) {
 				setError(

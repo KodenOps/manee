@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { BiUser, BiUserCircle } from 'react-icons/bi';
-import Logo from '@/components/Logo';
 import { GiTakeMyMoney } from 'react-icons/gi';
 
 const page = () => {
