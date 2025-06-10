@@ -8,49 +8,80 @@ import supabase from '@/helper/supabaseClient';
 const page = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [firstName, setfirstName] = useState('');
+	const [lastName, setlastName] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [Error, setError] = useState('');
 	const router = useRouter();
+	
+	const generateAccountNumber = () => {
+		return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+	};
 
 	const handleSubmit = async () => {
-		setError(''); // Reset error
+		setError('');
 		const normalizedEmail = email.trim().toLowerCase();
+
+		// Check if the user already exists
 		const res = await fetch('/api/auth/check-user', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email }),
+			body: JSON.stringify({ email: normalizedEmail }),
 		});
 
 		const result = await res.json();
-
 		if (result.exists) {
 			setError('This email is already registered. Please log in instead.');
 			return;
 		}
 
-		// If not registered, proceed with signup
+		// Sign up user
 		const { data, error } = await supabase.auth.signUp({
-			email,
-			password,
+			email: normalizedEmail,
+			password: password,
 		});
+
 		if (error) {
-			if (error.message.toLowerCase().includes('user already registered')) {
-				setError(
-					'An account with this email already exists. Please log in instead.'
-				);
-			} else {
-				setError(error.message);
-			}
+			setError(error.message);
 			return;
 		}
 
-		if (data.user) {
-			setError('Registration successful! Please check your email to confirm.');
+		const user = data.user;
+		if (!user) return;
+
+		// Insert into profiles table with retry logic
+		let accountNumber;
+		let insertSuccess = false;
+
+		while (!insertSuccess) {
+			accountNumber = generateAccountNumber();
+
+			const { error: insertError } = await supabase.from('profiles').insert({
+				id: user.id,
+				email: normalizedEmail,
+				first_name: firstName,
+				last_name: lastName,
+				account_number: accountNumber.toString(),
+				balance: 50000,
+			});
+
+			if (!insertError) {
+				insertSuccess = true; // Exit the loop if successful
+			} else if (!insertError.message.includes('duplicate key value')) {
+				// If it's a different error, stop and log it
+				console.error('Error inserting profile:', insertError);
+				setError('Error creating user profile.');
+				return;
+			}
 		}
 
+		// Success
+		setError('Registration successful! Please check your email to confirm.');
 		setEmail('');
 		setPassword('');
 		setConfirmPassword('');
+		setfirstName('');
+		setlastName('');
 	};
 
 	return (
@@ -71,6 +102,18 @@ const page = () => {
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 				/>
+				<InputField
+					type='text'
+					placeholder='Enter First Name'
+					value={firstName}
+					onChange={(e) => setfirstName(e.target.value)}
+				/>
+				<InputField
+					type='text'
+					placeholder='Enter Last Name'
+					value={lastName}
+					onChange={(e) => setlastName(e.target.value)}
+				/>
 
 				<InputField
 					type='password'
@@ -84,6 +127,7 @@ const page = () => {
 					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
 				/>
+
 				{Error && (
 					<p className='text-sm text-center text-red-400 py-2'>{Error}</p>
 				)}

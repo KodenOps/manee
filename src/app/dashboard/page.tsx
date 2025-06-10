@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from 'next-themes';
 import CardTitle from '@/components/CardTitle';
 import { LuLayoutGrid } from 'react-icons/lu';
@@ -19,10 +19,63 @@ import { FaRegCreditCard } from 'react-icons/fa';
 import { GiUpgrade } from 'react-icons/gi';
 import { MdLock } from 'react-icons/md';
 import WithAuthentication from '@/components/WithAuthentication';
+import supabase from '@/helper/supabaseClient';
+
+type UserProfile = {
+	first_name: string;
+	last_name: string;
+	account_number: string;
+	balance: number;
+	email: string;
+};
+
 const Page = () => {
-	const showAlert = () => {
-		alert('button clicked');
-	};
+	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		const fetchProfile = async () => {
+			try {
+				const userResponse = await supabase.auth.getUser();
+				const user = userResponse.data.user;
+
+				if (user) {
+					const { data: profile, error } = await supabase
+						.from('profiles')
+						.select('first_name, last_name, account_number, balance')
+						.eq('id', user.id)
+						.single();
+
+					if (error) {
+						console.error('Error fetching profile:', error);
+					} else if (profile) {
+						setUserProfile({
+							...profile,
+							email: user.email || '',
+						});
+					} else {
+						console.warn('No profile found for user ID:', user.id);
+					}
+				}
+			} catch (error) {
+				console.error('Unexpected error fetching profile:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProfile();
+	}, []);
+	if (loading || !userProfile) {
+		return (
+			<ThemeProvider
+				attribute='class'
+				defaultTheme='system'>
+				<div className='text-center mt-20 text-gray-500 dark:text-gray-400'>
+					Loading profile...
+				</div>
+			</ThemeProvider>
+		);
+	}
 	return (
 		<ThemeProvider
 			attribute='class'
@@ -30,17 +83,15 @@ const Page = () => {
 			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px]'>
 				<SideNav />
 				<div className='w-full '>
-					<HeaderNav />
+					<HeaderNav userprofile={userProfile} />
 					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between'>
 						<AccountCard
-							accountBal={2039123}
-							accountNum='2034320099'
-							accountType='Current'
-						/>
-						<AccountCard
-							accountBal={2039123}
-							accountNum='2033223344'
+							accountBal={userProfile?.balance || 50000}
+							accountNum={userProfile?.account_number || '0000000000'}
 							accountType='Savings'
+							accountName={
+								userProfile?.first_name + ' ' + userProfile?.last_name
+							}
 						/>
 					</div>
 					<div className='w-full flex md:flex-row flex-col justify-between gap-2'>

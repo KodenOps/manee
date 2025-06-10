@@ -8,9 +8,11 @@ import InterbankForm from '@/components/InterbankForm';
 import IntrabankForm from '@/components/Intrabankforms';
 import SideNav from '@/components/SideNav';
 import { ThemeProvider } from 'next-themes';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { beneficiaries } from '@/data/beneficiary';
 import { FaUserCircle } from 'react-icons/fa';
+import WithAuthentication from '@/components/WithAuthentication';
+import supabase from '@/helper/supabaseClient';
 
 // Define the type for userBankInfo
 interface UserBankInfo {
@@ -21,9 +23,18 @@ interface UserBankInfo {
 	accountNumber: string;
 }
 
-const Interbank = () => {
-	const [isinter, setisinter] = useState(true);
+type UserProfile = {
+	first_name: string;
+	last_name: string;
+	account_number: string;
+	balance: number;
+	email: string;
+};
 
+const page = () => {
+	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+	const [isinter, setisinter] = useState(true);
+	const [loading, setLoading] = useState(true);
 	// Use the defined type for userBankInfo
 	const [userBankInfo, setuserBankInfo] = useState<UserBankInfo>({
 		id: '',
@@ -35,6 +46,51 @@ const Interbank = () => {
 	function toggleSwitcher(isinter: boolean) {
 		setisinter(!isinter);
 	}
+
+	useEffect(() => {
+		const fetchProfile = async () => {
+			try {
+				const userResponse = await supabase.auth.getUser();
+				const user = userResponse.data.user;
+
+				if (user) {
+					const { data: profile, error } = await supabase
+						.from('profiles')
+						.select('first_name, last_name, account_number, balance')
+						.eq('id', user.id)
+						.single();
+
+					if (error) {
+						console.error('Error fetching profile:', error);
+					} else if (profile) {
+						setUserProfile({
+							...profile,
+							email: user.email || '',
+						});
+					} else {
+						console.warn('No profile found for user ID:', user.id);
+					}
+				}
+			} catch (error) {
+				console.error('Unexpected error fetching profile:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProfile();
+	}, []);
+	if (loading || !userProfile) {
+		return (
+			<ThemeProvider
+				attribute='class'
+				defaultTheme='system'>
+				<div className='text-center mt-20 text-gray-500 dark:text-gray-400'>
+					Loading profile...
+				</div>
+			</ThemeProvider>
+		);
+	}
 	return (
 		<ThemeProvider
 			attribute='class'
@@ -42,17 +98,15 @@ const Interbank = () => {
 			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px]'>
 				<SideNav />
 				<div className='w-full '>
-					<HeaderNav />
+					<HeaderNav userprofile={userProfile} />
 					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between'>
 						<AccountCard
-							accountBal={2039123}
-							accountNum='2034320099'
-							accountType='Current'
-						/>
-						<AccountCard
-							accountBal={2039123}
-							accountNum='2033228354'
+							accountBal={userProfile?.balance || 50000}
+							accountNum={userProfile?.account_number || '0000000000'}
 							accountType='Savings'
+							accountName={
+								userProfile?.first_name + ' ' + userProfile?.last_name
+							}
 						/>
 					</div>
 					<div className='flex w-full items-start justify-start mt-4 py-8'>
@@ -115,7 +169,7 @@ const Interbank = () => {
 														fullName: beneficiary.fullName,
 														bankName: beneficiary.bankName,
 														accountNumber: beneficiary.accountNumber,
-													}); 
+													});
 													console.log(beneficiary);
 												}}>
 												<span className='text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
@@ -154,4 +208,4 @@ const Interbank = () => {
 	);
 };
 
-export default Interbank;
+export default WithAuthentication(page);

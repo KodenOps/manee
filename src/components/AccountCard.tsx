@@ -9,20 +9,23 @@ interface accountInfoType {
 	accountType: string;
 	accountNum: string;
 	accountBal: number;
+	accountName?: string;
 }
 
 const AccountCard = ({
 	accountBal,
 	accountNum,
 	accountType,
+	accountName,
 }: accountInfoType) => {
 	const [balVisible, setbalVisible] = useState(false);
 	return (
 		<div className='  md:h-[200px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full '>
-			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px]'>
-				<div className='top z-[20] md:px-0 px-4 '>
+			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px] w-full'>
+				<div className='top z-[20] md:px-0 px-4 w-full'>
 					<h4 className='md:text-[18px] text-[12px] font-semibold dark:text-[var(--accents)]'>
-						{accountType}
+						{accountType} |{' '}
+						<span className='text-slate-300'>{accountName}</span>
 					</h4>
 					<p className='md:font-bold font-normal md:text-lg text-sm tracking-widest flex items-center gap-2 text-[var(--primary-dark)] dark:text-[var(--whites)]'>
 						{accountNum}{' '}
@@ -58,13 +61,13 @@ const AccountCard = ({
 					</div>
 				</div>
 			</div>
-			<div className='dark:bg-[#2a3f80f6] bg-[#aee9eb]  absolute h-[100%] z-[0] top-0	 overflow-hidden'>
-				<div className='top-0  h-full w-full object-cover bottom-0 scale-150 float-start  opacity-20 '>
+			<div className='dark:bg-[#2a3f80f6] bg-[#aee9eb]  absolute h-[100%] z-[0] top-0	overflow-hidden w-[100vw]'>
+				<div className='top-0  h-full object-fill  bottom-0 scale-150 float-start  opacity-20 w-[100vw]'>
 					<Image
 						src={design}
 						alt='flow'
 						height={1000}
-						width={1000}
+						width={2000}
 					/>
 				</div>
 			</div>
