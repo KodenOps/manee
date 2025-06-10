@@ -16,7 +16,7 @@ const SideBtns = () => {
 	return (
 		<div>
 			{/* FIRST LINK BOX */}
-			<div className='topLinks mt-[32px]'>
+			<div className='topLinks '>
 				<NavBtn
 					text='Dashboard'
 					IconText={LuLayoutGrid}
@@ -85,7 +85,7 @@ const SideBtns = () => {
 			<button
 				onClick={async () => {
 					const { error } = await supabase.auth.signOut();
-					router.push('/login'); 
+					router.push('/login');
 					if (error) throw error; // Handle error if needed
 				}}>
 				Logout

@@ -9,6 +9,8 @@ import { IoMenu, IoCloseSharp } from 'react-icons/io5';
 import Logo from './Logo';
 import { GiTakeMyMoney } from 'react-icons/gi';
 import SideBtns from './SideBtns';
+import logo from '../../public/assets/logo.svg';
+import Image from 'next/image';
 
 type UserProfile = {
 	first_name: string;
@@ -35,12 +37,17 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 		return (
 			<div className='flex flex-col justify-center items-center h-full w-full bg-[var(--whites)] dark:bg-[var(--primary-dark)] fixed top-0 z-[500] overflow-hidden'>
 				<div className='flex flex-col items-center justify-center text-center'>
-					<div className='text-[var(--primary)] dark:text-[var(--secondary-dark)] flex items-center  px-[24px] gap-[5px]'>
+					<Image
+						src={logo}
+						alt='Manee Logo'
+						className='w-[100px] h-[100px]'
+					/>
+					{/* <div className='text-[var(--primary)] dark:text-[var(--secondary-dark)] flex items-center  px-[24px] gap-[5px]'>
 						<span className='text-[24px] md:text-[80px]'>
 							<GiTakeMyMoney />
 						</span>
 						<h2 className='font-bold text-[24px] md:text-[80px]'>MANEE</h2>
-					</div>
+					</div> */}
 					<p className='text-[16px] md:text-[30px]'>
 						Swift like a bullet, Reliable like an Instinct.
 					</p>

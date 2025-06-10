@@ -25,7 +25,9 @@ const AccountCard = ({
 				<div className='top z-[20] md:px-0 px-4 w-full'>
 					<h4 className='md:text-[18px] text-[12px] font-semibold dark:text-[var(--accents)]'>
 						{accountType} |{' '}
-						<span className='text-slate-300'>{accountName}</span>
+						<span className='dark:text-slate-300 text-black'>
+							{accountName}
+						</span>
 					</h4>
 					<p className='md:font-bold font-normal md:text-lg text-sm tracking-widest flex items-center gap-2 text-[var(--primary-dark)] dark:text-[var(--whites)]'>
 						{accountNum}{' '}
