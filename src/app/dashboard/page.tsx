@@ -93,6 +93,14 @@ const Page = () => {
 								userProfile?.first_name + ' ' + userProfile?.last_name
 							}
 						/>
+						<AccountCard
+							accountBal={userProfile?.balance || 50000}
+							accountNum={userProfile?.account_number || '0000000000'}
+							accountType='Savings'
+							accountName={
+								userProfile?.first_name + ' ' + userProfile?.last_name
+							}
+						/>
 					</div>
 					<div className='w-full flex md:flex-row flex-col justify-between gap-2'>
 						{/* account transactions */}

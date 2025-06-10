@@ -4,9 +4,8 @@ import InputField from '@/components/InputField';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import supabase from '@/helper/supabaseClient';
-
+supabase.auth.signOut();
 const page = () => {
-	supabase.auth.signOut();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [firstName, setfirstName] = useState('');
