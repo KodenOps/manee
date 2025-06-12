@@ -34,4 +34,18 @@ export const beneficiaries = [
 		accountNumber: '4857392021',
 		bankName: 'Ecobank Nigeria',
 	},
+	{
+		id: 'P7Q8R9Sfd0',
+		shortName: 'David .O.',
+		fullName: 'David Okoro',
+		accountNumber: '4857392021',
+		bankName: 'Ecobank Nigeria',
+	},
+	{
+		id: 'P7Qdf8R9w2S0',
+		shortName: 'David .O.',
+		fullName: 'David Okoro',
+		accountNumber: '4857392021',
+		bankName: 'Ecobank Nigeria',
+	},
 ];

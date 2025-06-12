@@ -9,6 +9,7 @@ import { RiWifiFill } from 'react-icons/ri';
 import { TbMoneybag } from 'react-icons/tb';
 import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
 import { useRouter } from 'next/navigation';
+import { MdLogout } from 'react-icons/md';
 
 const SideBtns = () => {
 	const router = useRouter();
@@ -16,14 +17,14 @@ const SideBtns = () => {
 	return (
 		<div>
 			{/* FIRST LINK BOX */}
-			<div className='topLinks '>
+			<div className='topLinks mt-6'>
 				<NavBtn
 					text='Dashboard'
 					IconText={LuLayoutGrid}
 					url='/'
 				/>
-				<h4 className='px-[24px] font-medium text-sm mt-4 mb-2 tracking-wider dark:text-[var(--whites-dark)]'>
-					TRANSACT
+				<h4 className='px-[24px] font-medium text-sm mt-8 mb-4 tracking-wider text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
+					TRANSACTIONS
 				</h4>
 				<NavBtn
 					text='Transfers'
@@ -53,7 +54,7 @@ const SideBtns = () => {
 			</div>
 			{/* SECOND LINK BOX */}
 			<div className='topLinks mt-[32px]'>
-				<h4 className='px-[24px] font-medium text-sm mt-4 mb-2 tracking-wider dark:text-[var(--whites-dark)]'>
+				<h4 className='px-[24px] font-medium text-sm mt-4 mb-4 tracking-wider text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
 					ACCOUNT
 				</h4>
 				<NavBtn
@@ -71,6 +72,12 @@ const SideBtns = () => {
 					IconText={GiPayMoney}
 					url='/requests'
 				/>
+				<NavBtn
+					text='Logout'
+					color='text-[red] dark:text-[var(--darkred)] py-4 font-semibold'
+					IconText={MdLogout}
+					url='/login'
+				/>
 			</div>
 			<div className='user md:hidden flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
 				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'></div>
@@ -80,16 +87,7 @@ const SideBtns = () => {
 					</p>
 					<p className='text-[12px] font-normal'>ayopumping@example.com</p>
 				</div>
-				<button>Logout</button>
 			</div>
-			<button
-				onClick={async () => {
-					const { error } = await supabase.auth.signOut();
-					router.push('/login');
-					if (error) throw error; // Handle error if needed
-				}}>
-				Logout
-			</button>
 		</div>
 	);
 };

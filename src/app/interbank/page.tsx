@@ -13,6 +13,9 @@ import { beneficiaries } from '@/data/beneficiary';
 import { FaUserCircle } from 'react-icons/fa';
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
+import { HiH2 } from 'react-icons/hi2';
+import BeneficiaryModal from '@/components/BeneficiaryModal';
+import AddNewBene from '@/components/AddNewBene';
 
 // Define the type for userBankInfo
 interface UserBankInfo {
@@ -30,11 +33,27 @@ type UserProfile = {
 	balance: number;
 	email: string;
 };
+interface Beneficiary {
+	id: number;
+	profile_id: string;
+	first_name: string;
+	last_name: string;
+	account_number: string;
+	bank_name: string;
+	bank_short_name: string;
+	created_at: string;
+	updated_at: string;
+}
 
 const page = () => {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 	const [isinter, setisinter] = useState(true);
 	const [loading, setLoading] = useState(true);
+	const [userBeneficiaries, setUserBeneficiaries] = useState<Beneficiary[]>([]);
+	const [beneficiaries, setBeneficiaries] = useState<any[]>([]);
+	const [user, setUser] = useState<any>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
 	// Use the defined type for userBankInfo
 	const [userBankInfo, setuserBankInfo] = useState<UserBankInfo>({
 		id: '',
@@ -48,20 +67,21 @@ const page = () => {
 	}
 
 	useEffect(() => {
-		const fetchProfile = async () => {
+		const fetchProfileAndBeneficiaries = async () => {
 			try {
 				const userResponse = await supabase.auth.getUser();
 				const user = userResponse.data.user;
-
+				setUser(user);
 				if (user) {
-					const { data: profile, error } = await supabase
+					// Fetch profile
+					const { data: profile, error: profileError } = await supabase
 						.from('profiles')
 						.select('first_name, last_name, account_number, balance')
 						.eq('id', user.id)
 						.single();
 
-					if (error) {
-						console.error('Error fetching profile:', error);
+					if (profileError) {
+						console.error('Error fetching profile:', profileError);
 					} else if (profile) {
 						setUserProfile({
 							...profile,
@@ -70,16 +90,32 @@ const page = () => {
 					} else {
 						console.warn('No profile found for user ID:', user.id);
 					}
+
+					// Fetch beneficiaries
+					const { data: beneficiaries, error: beneficiariesError } =
+						await supabase
+							.from('beneficiaries')
+							.select('*')
+							.eq('profile_id', user.id);
+
+					if (beneficiariesError) {
+						console.error('Error fetching beneficiaries:', beneficiariesError);
+					} else {
+						setUserBeneficiaries(beneficiaries); // You should have a state like const [userBeneficiaries, setUserBeneficiaries] = useState([]);
+					}
 				}
 			} catch (error) {
-				console.error('Unexpected error fetching profile:', error);
+				console.error('Unexpected error fetching data:', error);
 			} finally {
 				setLoading(false);
 			}
 		};
 
-		fetchProfile();
+		fetchProfileAndBeneficiaries();
+
+		console.log(beneficiaries);
 	}, []);
+
 	if (loading || !userProfile) {
 		return (
 			<ThemeProvider
@@ -156,31 +192,48 @@ const page = () => {
 							</div>
 							<div className='mt-2'>
 								<CardTitle title='Beneficiaries' />
-								<div className='beneficiary flex items-center justify-start overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
-									{beneficiaries.map((beneficiary) => {
-										return (
-											<div
-												key={beneficiary.id}
-												className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--card-bg-dark)]  min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer'
-												onClick={() => {
-													setuserBankInfo({
-														id: beneficiary.id,
-														shortName: beneficiary.shortName || '', // Handle null values
-														fullName: beneficiary.fullName,
-														bankName: beneficiary.bankName,
-														accountNumber: beneficiary.accountNumber,
-													});
-													console.log(beneficiary);
-												}}>
-												<span className='text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-													<FaUserCircle size={32} />
-												</span>
-												<p className='font-medium md:text-md text-sm text-[var(--text)] dark:text-[var(--whites-dark)] text-center w-full'>
-													{beneficiary.shortName}
-												</p>
-											</div>
-										);
-									})}
+								<div className='beneficiary flex  items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
+									{userBeneficiaries.length > 0 ? (
+										userBeneficiaries.map((beneficiary) => {
+											return (
+												<div
+													key={beneficiary.id}
+													className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--primary)] bg-[var(--primary)]   min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer '
+													onClick={() => {
+														setuserBankInfo({
+															id: beneficiary.id.toString(),
+															shortName:
+																beneficiary.first_name +
+																'.' +
+																beneficiary.last_name[0],
+															fullName:
+																beneficiary.first_name +
+																' ' +
+																beneficiary.last_name,
+															bankName: beneficiary.bank_name,
+															accountNumber: beneficiary.account_number,
+														});
+														console.log(beneficiary);
+													}}>
+													<span className='text-[white] dark:text-[var(--primary-dark)]'>
+														<FaUserCircle size={32} />
+													</span>
+													<p className='font-medium md:text-md text-sm dark:text-[var(--whites-dark)] text-[white]  text-center w-full'>
+														{beneficiary.first_name +
+															' .' +
+															beneficiary.last_name[0]}
+													</p>
+												</div>
+											);
+										})
+									) : (
+										<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
+									)}
+									{userBeneficiaries.length > 0 ? (
+										<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
+									) : (
+										''
+									)}
 								</div>
 							</div>
 
@@ -197,12 +250,31 @@ const page = () => {
 							)}
 						</div>
 						{/* History section */}
-						<div className='pb-8 shadow-md w-full pr-[16px] md:block hidden'>
+						<div className='pb-8 shadow-md w-1/2 pr-[16px] md:block hidden'>
 							<History />
 						</div>
 					</div>
 				</div>
 				{/* end of body */}
+				<BeneficiaryModal
+					isOpen={isModalOpen}
+					onClose={() => setIsModalOpen(false)}
+					profileId={user?.id}
+					onSuccess={async () => {
+						if (!user?.id) return;
+
+						const { data: beneData, error } = await supabase
+							.from('beneficiaries')
+							.select('*')
+							.eq('profile_id', user.id);
+
+						if (error) {
+							console.error('Failed to refetch beneficiaries:', error);
+						} else {
+							setUserBeneficiaries(beneData || []);
+						}
+					}}
+				/>
 			</div>
 		</ThemeProvider>
 	);

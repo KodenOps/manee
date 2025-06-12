@@ -80,11 +80,27 @@ const Page = () => {
 		<ThemeProvider
 			attribute='class'
 			defaultTheme='system'>
-			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px]'>
+			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px] w-full overflow-x-hidden'>
 				<SideNav />
 				<div className='w-full '>
 					<HeaderNav userprofile={userProfile} />
-					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between'>
+					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between  overflow-x-auto'>
+						<AccountCard
+							accountBal={userProfile?.balance || 50000}
+							accountNum={userProfile?.account_number || '0000000000'}
+							accountType='Savings'
+							accountName={
+								userProfile?.first_name + ' ' + userProfile?.last_name
+							}
+						/>
+						<AccountCard
+							accountBal={userProfile?.balance || 50000}
+							accountNum={userProfile?.account_number || '0000000000'}
+							accountType='Savings'
+							accountName={
+								userProfile?.first_name + ' ' + userProfile?.last_name
+							}
+						/>
 						<AccountCard
 							accountBal={userProfile?.balance || 50000}
 							accountNum={userProfile?.account_number || '0000000000'}
@@ -153,7 +169,7 @@ const Page = () => {
 									/>
 								</div>
 							</div>
-							<div className='px-[8px] mt-4 shadow-md pb-4'>
+							<div className='px-[16px] mt-4 shadow-md pb-4'>
 								<CardTitle
 									title='Profile Management'
 									IconName={FaUserCog}

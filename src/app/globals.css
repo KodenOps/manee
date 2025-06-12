@@ -8,7 +8,7 @@
 	--text: #0e0e0e;
 	--whites: #f7f7f7;
 	--greys: #6a6767;
-	--reds: #f24822;
+	/* --reds: #f24822; */
 	--greens: #46c1ba;
 	--disabled: #999999;
 
@@ -20,6 +20,7 @@
 	--accents: #00cccc;
 	--inputborder: #679aff;
 	--reds: #ff7657;
+	--darkred: #f74932ee;
 	--disabled: #cfcfcf;
 }
 .whitespace-pre-line {
@@ -39,5 +40,5 @@
 }
 
 .input-style {
-	@apply w-full border-2 border-[var(--primary)] dark:border-[var(--inputborder)] rounded-[5px] px-[16px] md:py-[14px] py-[12px] placeholder:text-[var(--disabled)] focus:border-[var(--primary)] focus:outline-none dark:focus:border-[var(--inputborder)] bg-transparent;
+	@apply w-full border-2 border-[var(--primary)] dark:border-[var(--inputborder)] rounded-[5px] px-[16px] md:py-[14px] py-[12px] placeholder:text-[#585858] focus:border-[var(--primary)] focus:outline-none dark:focus:border-[var(--inputborder)] bg-transparent;
 }

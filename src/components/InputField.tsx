@@ -33,10 +33,25 @@ const InputField = ({
 				value={value}
 				required
 				autoComplete='on'
-				className='w-full border-2 border-[var(--primary)] dark:border-[var(--inputborder)] rounded-[5px] px-[16px] md:py-[14px] py-[12px] placeholder:text-[var(--disabled)] focus:border-[var(--primary)] focus:outline-none dark:focus:border-[var(--inputborder)] bg-transparent mb-4'
+				className='
+		w-full 
+		border-2 
+		border-[var(--primary)] 
+		dark:border-[var(--inputborder)] 
+		rounded-[5px] 
+		px-[16px] 
+		md:py-[14px] 
+		py-[12px]  
+		focus:border-[var(--primary)] 
+		focus:outline-none 
+		dark:focus:border-[var(--inputborder)] 
+		placeholder-gray-800 
+		dark:placeholder-gray-500
+	'
 				onChange={onChange}
 				onClick={onClick}
 			/>
+
 			{withDesc === true ? <p>{infoText}</p> : null}
 		</div>
 	);

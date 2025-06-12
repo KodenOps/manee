@@ -23,14 +23,6 @@ const SideNav = () => {
 				/>
 				<SideBtns />
 			</div>
-			<div className='img w-full flex-2 pb-4 flex items-end justify-center'>
-				<Image
-					src={navImg}
-					alt='sidebar images'
-					width={140}
-					height={100}
-				/>
-			</div>
 		</div>
 	);
 };

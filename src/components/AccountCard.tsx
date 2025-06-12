@@ -20,7 +20,7 @@ const AccountCard = ({
 }: accountInfoType) => {
 	const [balVisible, setbalVisible] = useState(false);
 	return (
-		<div className='  md:h-[200px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full '>
+		<div className='  md:h-[200px] min-w-[180px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full '>
 			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px] w-full'>
 				<div className='top z-[20] md:px-0 px-4 w-full'>
 					<h4 className='md:text-[18px] text-[12px] font-semibold dark:text-[var(--accents)]'>
@@ -63,14 +63,29 @@ const AccountCard = ({
 					</div>
 				</div>
 			</div>
+
 			<div className='dark:bg-[#2a3f80f6] bg-[#aee9eb]  absolute h-[100%] z-[0] top-0	overflow-hidden w-[100vw]'>
 				<div className='top-0  h-full object-fill  bottom-0 scale-150 float-start  opacity-20 w-[100vw]'>
-					<Image
+					<div
+						className='absolute inset-0 z-0 rounded-2xl'
+						style={{
+							backgroundImage: `
+      repeating-linear-gradient(60deg, #4f46e5 0, #4f46e5 16px, transparent 16px, transparent 32px),
+      repeating-linear-gradient(120deg, #3b82f6 0, #3b82f6 16px, transparent 16px, transparent 32px),
+      repeating-linear-gradient(180deg, #06b6d4 0, #06b6d4 16px, transparent 16px, transparent 32px)
+    `,
+							backgroundSize: '32px 56px',
+							opacity: 0.5, // Increased for more visibility
+							mixBlendMode: 'overlay', // Helps it blend with background themes
+						}}
+					/>
+
+					{/* <Image
 						src={design}
 						alt='flow'
 						height={1000}
 						width={2000}
-					/>
+					/> */}
 				</div>
 			</div>
 		</div>

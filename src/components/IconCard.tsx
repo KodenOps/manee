@@ -9,11 +9,11 @@ const IconCard = ({ boxText, IconName, url }: iconcardType) => {
 	return (
 		<Link
 			href={url}
-			className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--card-bg-dark)]  md:w-[150px] w-[100px] py-[24px] gap-2 cursor-pointer px-[8px] md:h-[120px] mb-4 border-0 hover:-translate-y-2 ease-in duration-1000 transition-transform'>
-			<span className='text-[var(--greys)] dark:text-[var(--accents)] md:text-[24px] text-[18px]'>
-				<IconName />
-			</span>
-			<p className='font-medium text-md text-[var(--text)] dark:text-[var(--whites-dark)] w-[80px]  text-center md:text-[14px] text-[12px] whitespace-pre-line'>
+			className='flex justify-center items-center shadow-sm rounded-[10px] dark:bg-[var(--card-bg-dark)]  md:w-[120px] w-[100px] py-[24px] gap-2 cursor-pointer px-[8px] md:h-[120px] mb-4 border-0 hover:-translate-y-2 ease-in duration-1000 transition-transform'>
+			<p className='font-medium text-[var(--text)] dark:text-[var(--whites-dark)] w-full  text-center text-[12px] '>
+				<span className='text-[var(--greys)] dark:text-[var(--accents)] md:text-[24px] text-[18px] w-full justify-center flex items-center mb-2'>
+					<IconName />
+				</span>
 				{boxText}
 			</p>
 		</Link>
