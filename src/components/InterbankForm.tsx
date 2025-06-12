@@ -203,7 +203,7 @@ const InterbankForm = (props: Beneficiary) => {
 						type='text' // Use "text" to allow formatting
 						placeholder='Enter Amount'
 						value={amount}
-						className='input-style'
+						className='input-style bg-transparent'
 						onChange={handleAmountChange}
 					/>
 				</div>

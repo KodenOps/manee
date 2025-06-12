@@ -47,6 +47,7 @@ const InputField = ({
 		dark:focus:border-[var(--inputborder)] 
 		placeholder-gray-800 
 		dark:placeholder-gray-500
+		bg-transparent mb-4
 	'
 				onChange={onChange}
 				onClick={onClick}
