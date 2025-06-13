@@ -93,22 +93,7 @@ const Page = () => {
 								userProfile?.first_name + ' ' + userProfile?.last_name
 							}
 						/>
-						<AccountCard
-							accountBal={userProfile?.balance || 50000}
-							accountNum={userProfile?.account_number || '0000000000'}
-							accountType='Savings'
-							accountName={
-								userProfile?.first_name + ' ' + userProfile?.last_name
-							}
-						/>
-						<AccountCard
-							accountBal={userProfile?.balance || 50000}
-							accountNum={userProfile?.account_number || '0000000000'}
-							accountType='Savings'
-							accountName={
-								userProfile?.first_name + ' ' + userProfile?.last_name
-							}
-						/>
+
 						<AccountCard
 							accountBal={userProfile?.balance || 50000}
 							accountNum={userProfile?.account_number || '0000000000'}
@@ -139,33 +124,19 @@ const Page = () => {
 									/>
 									<IconCard
 										IconName={FiPhoneCall}
-										boxText={`Buy \n Airtime`}
-										url='/pay-bills'
+										boxText={`Buy \n Airtime \n & \n Data`}
+										url='#'
 									/>
-									<IconCard
-										IconName={RiWifiFill}
-										boxText={`Buy \n Data`}
-										url='/interbank'
-									/>
+
 									<IconCard
 										IconName={TbMoneybag}
 										boxText='Short-Term Loan'
-										url='/interbank'
+										url='#'
 									/>
 									<IconCard
 										IconName={TbMoneybag}
-										boxText='Short-Term Loan'
-										url='/interbank'
-									/>
-									<IconCard
-										IconName={TbMoneybag}
-										boxText='Short-Term Loan'
-										url='/interbank'
-									/>
-									<IconCard
-										IconName={TbMoneybag}
-										boxText='Short-Term Loan'
-										url='/interbank'
+										boxText='Play Games'
+										url='#'
 									/>
 								</div>
 							</div>
@@ -188,6 +159,11 @@ const Page = () => {
 									<IconCard
 										IconName={GiUpgrade}
 										boxText='Upgrade Account'
+										url='/interbank'
+									/>
+									<IconCard
+										IconName={MdLock}
+										boxText='Reset Authentications'
 										url='/interbank'
 									/>
 									<IconCard
