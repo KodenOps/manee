@@ -310,14 +310,4 @@ sequenceDiagram
 
 ---
 
-### 🚀 For further development:
-
-- Expand transaction history details
-- Add loading skeletons instead of "Loading profile..."
-- Implement actual transfer logic in forms
-- Improve beneficiary management (search, filter)
-- Enhance error handling and user feedback
-
----
-
 **End of Documentation**
