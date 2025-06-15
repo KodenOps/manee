@@ -121,7 +121,10 @@ const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
 						maxLength={10}
 						minLength={10}
 						value={formData.account_number}
-						onChange={handleChange}
+						onChange={(e) => {
+							const numericOnly = e.target.value.replace(/\D/g, '');
+							setFormData({ ...formData, account_number: numericOnly });
+						}}
 						className='input-style'
 						required
 					/>
