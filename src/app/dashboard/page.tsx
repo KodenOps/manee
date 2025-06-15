@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ThemeProvider } from 'next-themes';
 import CardTitle from '@/components/CardTitle';
 import { LuLayoutGrid } from 'react-icons/lu';
@@ -8,18 +8,16 @@ import SideNav from '@/components/SideNav';
 import AccountCard from '@/components/AccountCard';
 import HeaderNav from '@/components/HeaderNav';
 import { FaMoneyBillTransfer } from 'react-icons/fa6';
-import { GiPayMoney } from 'react-icons/gi';
+import { GiPayMoney, GiUpgrade } from 'react-icons/gi';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
 import { TbMoneybag } from 'react-icons/tb';
 import History from '@/components/History';
-import { FaUserCog } from 'react-icons/fa';
-import { FaRegEdit } from 'react-icons/fa';
-import { FaRegCreditCard } from 'react-icons/fa';
-import { GiUpgrade } from 'react-icons/gi';
+import { FaUserCog, FaRegEdit, FaRegCreditCard } from 'react-icons/fa';
 import { MdLock } from 'react-icons/md';
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
+import Menuitems from '@/components/Menuitem';
 
 type UserProfile = {
 	first_name: string;
@@ -32,6 +30,8 @@ type UserProfile = {
 const Page = () => {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [openMenu, setOpenMenu] = useState<string | null>(null);
+
 	useEffect(() => {
 		const fetchProfile = async () => {
 			try {
@@ -45,15 +45,11 @@ const Page = () => {
 						.eq('id', user.id)
 						.single();
 
-					if (error) {
-						console.error('Error fetching profile:', error);
-					} else if (profile) {
+					if (!error && profile) {
 						setUserProfile({
 							...profile,
 							email: user.email || '',
 						});
-					} else {
-						console.warn('No profile found for user ID:', user.id);
 					}
 				}
 			} catch (error) {
@@ -65,6 +61,7 @@ const Page = () => {
 
 		fetchProfile();
 	}, []);
+
 	if (loading || !userProfile) {
 		return (
 			<ThemeProvider
@@ -76,41 +73,54 @@ const Page = () => {
 			</ThemeProvider>
 		);
 	}
+
 	return (
 		<ThemeProvider
 			attribute='class'
 			defaultTheme='system'>
-			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px] w-full overflow-x-hidden'>
+			<div className='flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px] w-full overflow-x-hidden'>
 				<SideNav />
-				<div className='w-full '>
+				<div className='w-full'>
 					<HeaderNav userprofile={userProfile} />
-					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between  overflow-x-auto'>
-						<AccountCard
-							accountBal={userProfile?.balance || 50000}
-							accountNum={userProfile?.account_number || '0000000000'}
-							accountType='Savings'
-							accountName={
-								userProfile?.first_name + ' ' + userProfile?.last_name
-							}
-						/>
 
-						<AccountCard
-							accountBal={userProfile?.balance || 50000}
-							accountNum={userProfile?.account_number || '0000000000'}
-							accountType='Savings'
-							accountName={
-								userProfile?.first_name + ' ' + userProfile?.last_name
-							}
-						/>
+					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
+						{[...Array(2)].map((_, idx) => (
+							<AccountCard
+								key={idx}
+								accountBal={userProfile.balance}
+								accountNum={userProfile.account_number}
+								accountType='Savings'
+								accountName={`${userProfile.first_name} ${userProfile.last_name}`}
+							/>
+						))}
 					</div>
+
 					<div className='w-full flex md:flex-row flex-col justify-between gap-2'>
-						{/* account transactions */}
+						{/* Left section */}
 						<div className='md:w-[50%] w-full md:ml-[210px]'>
-							<div className='  px-[8px] mt-4 shadow-md pb-4'>
+							{/* Quick Transactions */}
+							<div className='px-[8px] mt-4 shadow-md pb-4 relative'>
 								<CardTitle
 									title='Quick Transactions'
+									handleMenuClick={() =>
+										setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
+									}
 									IconName={LuLayoutGrid}
 								/>
+								{openMenu === 'quick' && (
+									<Menuitems
+										items={[
+											{
+												label: 'Menu 1',
+												onClick: () => setOpenMenu(null),
+											},
+											{
+												label: 'Menu 2',
+												onClick: () => setOpenMenu(null),
+											},
+										]}
+									/>
+								)}
 								<div className='linkList mt-4 flex items-center md:justify-evenly px-2 justify-center md:gap-4 gap-2 w-full flex-wrap'>
 									<IconCard
 										IconName={FaMoneyBillTransfer}
@@ -124,10 +134,9 @@ const Page = () => {
 									/>
 									<IconCard
 										IconName={FiPhoneCall}
-										boxText={`Buy \n Airtime \n & \n Data`}
+										boxText='Buy Airtime & Data'
 										url='#'
 									/>
-
 									<IconCard
 										IconName={TbMoneybag}
 										boxText='Short-Term Loan'
@@ -140,11 +149,32 @@ const Page = () => {
 									/>
 								</div>
 							</div>
-							<div className='px-[16px] mt-4 shadow-md pb-4'>
+
+							{/* Profile Management */}
+							<div className='px-[16px] mt-4 shadow-md pb-4 relative'>
 								<CardTitle
 									title='Profile Management'
+									handleMenuClick={() =>
+										setOpenMenu((prev) =>
+											prev === 'profile' ? null : 'profile'
+										)
+									}
 									IconName={FaUserCog}
 								/>
+								{openMenu === 'profile' && (
+									<Menuitems
+										items={[
+											{
+												label: 'Menu 1',
+												onClick: () => setOpenMenu(null),
+											},
+											{
+												label: 'Menu 2',
+												onClick: () => setOpenMenu(null),
+											},
+										]}
+									/>
+								)}
 								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
 									<IconCard
 										IconName={FaRegEdit}
@@ -153,7 +183,7 @@ const Page = () => {
 									/>
 									<IconCard
 										IconName={FaRegCreditCard}
-										boxText='Request For Debit Card'
+										boxText='Request Debit Card'
 										url='/interbank'
 									/>
 									<IconCard
@@ -166,17 +196,12 @@ const Page = () => {
 										boxText='Reset Authentications'
 										url='/interbank'
 									/>
-									<IconCard
-										IconName={MdLock}
-										boxText='Reset Authentications'
-										url='/interbank'
-									/>
 								</div>
 							</div>
 						</div>
 
-						{/* History section */}
-						<div className='md:w-[45%] w-full  px-[8px] mt-4 shadow-md pb-4 mr-[24px]'>
+						{/* Right section - History */}
+						<div className='md:w-[45%] w-full px-[8px] mt-4 shadow-md pb-4 mr-[24px]'>
 							<History />
 						</div>
 					</div>

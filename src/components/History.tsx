@@ -1,17 +1,56 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import CardTitle from './CardTitle';
 import { GiOpenBook } from 'react-icons/gi';
 import HistoryDeets from './HistoryDeets';
 import { IoMdTrendingUp } from 'react-icons/io';
 import { IoMdTrendingDown } from 'react-icons/io';
+import Menuitems from './Menuitem';
 
 const History = () => {
+	const [openMenu, setOpenMenu] = useState<string | null>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const kebabRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node) &&
+				!kebabRef.current?.contains(event.target as Node)
+			) {
+				setOpenMenu(null);
+			}
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
+
 	return (
-		<div className='w-full'>
+		<div className='w-full relative'>
 			<CardTitle
 				title='Past Transactions'
+				handleMenuClick={() =>
+					setOpenMenu((prev) => (prev === 'history' ? null : 'history'))
+				}
 				IconName={GiOpenBook}
+				menuRef={kebabRef}
 			/>
+			{openMenu === 'history' && (
+				<Menuitems
+					items={[
+						{
+							label: 'Menu 1',
+							onClick: () => setOpenMenu(null),
+						},
+						{
+							label: 'Menu 2',
+							onClick: () => setOpenMenu(null),
+						},
+					]}
+					dropdownRef={dropdownRef}
+				/>
+			)}
+
 			<div className='historydetails'>
 				<HistoryDeets
 					headertext='Transfer Failed'
