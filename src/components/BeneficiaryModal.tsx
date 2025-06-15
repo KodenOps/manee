@@ -1,10 +1,19 @@
 // BeneficiaryModal.tsx
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import supabase from '@/helper/supabaseClient';
 import { NigeriaBanks } from '@/data/BankDb'; // Adjust the import path as necessary
 import Button from './Button';
 const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
+	useEffect(() => {
+		if (isOpen && NigeriaBanks.length > 0) {
+			setFormData((prev) => ({
+				...prev,
+				bank_name: NigeriaBanks[0].fullName,
+				bank_short_name: NigeriaBanks[0].shortName,
+			}));
+		}
+	}, [isOpen]);
 	const [bankShortCode, setBankShortCode] = useState('');
 	const [formData, setFormData] = useState({
 		first_name: '',
