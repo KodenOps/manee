@@ -8,16 +8,14 @@ import InterbankForm from '@/components/InterbankForm';
 import IntrabankForm from '@/components/Intrabankforms';
 import SideNav from '@/components/SideNav';
 import { ThemeProvider } from 'next-themes';
-import React, { useEffect, useState } from 'react';
-import { beneficiaries } from '@/data/beneficiary';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
-import { HiH2 } from 'react-icons/hi2';
 import BeneficiaryModal from '@/components/BeneficiaryModal';
 import AddNewBene from '@/components/AddNewBene';
+import ManageBeneficiariesModal from '@/components/ManageBeneficiariesModal';
 
-// Define the type for userBankInfo
 interface UserBankInfo {
 	id: string;
 	shortName: string;
@@ -33,6 +31,7 @@ type UserProfile = {
 	balance: number;
 	email: string;
 };
+
 interface Beneficiary {
 	id: number;
 	profile_id: string;
@@ -50,11 +49,10 @@ const page = () => {
 	const [isinter, setisinter] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [userBeneficiaries, setUserBeneficiaries] = useState<Beneficiary[]>([]);
-	const [beneficiaries, setBeneficiaries] = useState<any[]>([]);
 	const [user, setUser] = useState<any>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isManageOpen, setIsManageOpen] = useState(false);
 
-	// Use the defined type for userBankInfo
 	const [userBankInfo, setuserBankInfo] = useState<UserBankInfo>({
 		id: '',
 		shortName: '',
@@ -62,9 +60,28 @@ const page = () => {
 		bankName: '',
 		accountNumber: '',
 	});
-	function toggleSwitcher(isinter: boolean) {
-		setisinter(!isinter);
-	}
+
+	// Dropdown logic
+	const [menuOpen, setMenuOpen] = useState(false);
+	const kebabRef = useRef<HTMLDivElement>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node) &&
+				!kebabRef.current?.contains(event.target as Node)
+			) {
+				setMenuOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
 
 	useEffect(() => {
 		const fetchProfileAndBeneficiaries = async () => {
@@ -72,48 +89,39 @@ const page = () => {
 				const userResponse = await supabase.auth.getUser();
 				const user = userResponse.data.user;
 				setUser(user);
+
 				if (user) {
-					// Fetch profile
 					const { data: profile, error: profileError } = await supabase
 						.from('profiles')
 						.select('first_name, last_name, account_number, balance')
 						.eq('id', user.id)
 						.single();
 
-					if (profileError) {
-						console.error('Error fetching profile:', profileError);
-					} else if (profile) {
+					if (!profileError && profile) {
 						setUserProfile({
 							...profile,
 							email: user.email || '',
 						});
-					} else {
-						console.warn('No profile found for user ID:', user.id);
 					}
 
-					// Fetch beneficiaries
 					const { data: beneficiaries, error: beneficiariesError } =
 						await supabase
 							.from('beneficiaries')
 							.select('*')
 							.eq('profile_id', user.id);
 
-					if (beneficiariesError) {
-						console.error('Error fetching beneficiaries:', beneficiariesError);
-					} else {
-						setUserBeneficiaries(beneficiaries); // You should have a state like const [userBeneficiaries, setUserBeneficiaries] = useState([]);
+					if (!beneficiariesError && beneficiaries) {
+						setUserBeneficiaries(beneficiaries);
 					}
 				}
 			} catch (error) {
-				console.error('Unexpected error fetching data:', error);
+				console.error('Unexpected error:', error);
 			} finally {
 				setLoading(false);
 			}
 		};
 
 		fetchProfileAndBeneficiaries();
-
-		console.log(beneficiaries);
 	}, []);
 
 	if (loading || !userProfile) {
@@ -127,116 +135,105 @@ const page = () => {
 			</ThemeProvider>
 		);
 	}
+
 	return (
 		<ThemeProvider
 			attribute='class'
 			defaultTheme='system'>
-			<div className=' flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px]'>
+			<div className='flex bg-[var(--whites)] min-h-screen dark:bg-[var(--primary-dark)] pb-[100px] relative'>
 				<SideNav />
-				<div className='w-full '>
+				<div className='w-full'>
 					<HeaderNav userprofile={userProfile} />
-					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0  gap-2 py-[16px] flex items-center md:justify-start justify-between'>
+
+					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between'>
 						<AccountCard
-							accountBal={userProfile?.balance || 50000}
-							accountNum={userProfile?.account_number || '0000000000'}
+							accountBal={userProfile.balance}
+							accountNum={userProfile.account_number}
 							accountType='Savings'
-							accountName={
-								userProfile?.first_name + ' ' + userProfile?.last_name
-							}
+							accountName={`${userProfile.first_name} ${userProfile.last_name}`}
 						/>
 					</div>
-					<div className='flex w-full items-start justify-start mt-4 py-8'>
-						<div className='mainTransSection px-[8px] md:ml-[210px] md:pr-[16px]  flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8'>
-							{/* <HeaderSwitcher
-							buttonText1='Interbank Transfer'
-							buttonText2='Intrabank Transfer'
-							isFirst={isinter}
-							actions={toggleSwitcher}
-						/> */}
 
-							{/* header switcher */}
-							<div>
-								{isinter ? (
-									<div className='w-full shadow-md flex items-center justify-center md:h-[60px] h-[60px] rounded-sm'>
-										<button
-											className='leftMenu text-center bg-[var(--primary)] dark:bg-[var(--secondary-dark)] text-[var(--whites)] dark:text-[var(--primary-dark)] font-medium flex-1 h-full flex items-center md:text-lg text-[12px] justify-center'
-											onClick={() => setisinter(true)}>
-											Interbank Transfer
-										</button>
-										<button
-											className='rightMenu text-center bg-[var(--whites)] font-medium text-[var(--text)] dark:bg-[var(--card-bg-dark)] dark:text-[var(--whites-dark)] flex-1 h-full flex items-center justify-center md:text-lg text-[12px] '
-											onClick={() => {
-												setisinter(false);
-											}}>
-											Intrabank Transfer
-										</button>
-									</div>
-								) : (
-									<>
-										<div className='w-full shadow-md flex items-center justify-center md:h-[60px] h-[60px]'>
+					<div className='flex w-full items-start justify-start mt-4 py-8'>
+						<div className='mainTransSection px-[8px] md:ml-[210px] md:pr-[16px] flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8 relative'>
+							{/* Card Title with Dropdown Trigger */}
+							<CardTitle
+								title='Beneficiaries'
+								handleMenuClick={() => setMenuOpen((prev) => !prev)}
+								menuRef={kebabRef}
+							/>
+
+							{/* Dropdown modal below kebab */}
+							{menuOpen && (
+								<div
+									ref={dropdownRef}
+									className='absolute right-6 mt-2 z-50 w-[200px] rounded-lg shadow-md bg-white dark:bg-[var(--card-bg-dark)] border border-gray-200 dark:border-gray-600'>
+									<ul className='py-2 text-sm text-gray-700 dark:text-gray-200'>
+										<li>
 											<button
-												className='leftMenu text-center bg-[var(--whites)] font-medium text-[var(--text)] dark:bg-[var(--card-bg-dark)] dark:text-[var(--whites-dark)] flex-1 h-full flex items-center justify-center md:text-lg text-[12px] '
 												onClick={() => {
-													setisinter(true);
-												}}>
-												Interbank Transfer
+													setIsModalOpen(true);
+													setMenuOpen(false);
+												}}
+												className='block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600'>
+												Add New Beneficiary
 											</button>
+										</li>
+										<li>
 											<button
-												className='rightMenu text-center bg-[var(--primary)] dark:bg-[var(--secondary-dark)] text-[var(--whites)] dark:text-[var(--primary-dark)] font-medium flex-1 h-full flex items-center md:text-lg text-[12px]  justify-center'
-												onClick={() => setisinter(false)}>
-												Intrabank Transfer
+												onClick={() => {
+													setIsManageOpen(true);
+													setMenuOpen(false);
+												}}
+												className='block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600'>
+												Manage Beneficiaries
 											</button>
+										</li>
+									</ul>
+								</div>
+							)}
+
+							{/* Beneficiaries Section */}
+							<div className='beneficiary flex items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
+								{userBeneficiaries.length > 0 ? (
+									userBeneficiaries.map((beneficiary) => (
+										<div
+											key={beneficiary.id}
+											className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--primary)] bg-[var(--primary)] min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer'
+											onClick={() => {
+												setuserBankInfo({
+													id: beneficiary.id.toString(),
+													shortName:
+														beneficiary.first_name +
+														'.' +
+														beneficiary.last_name[0],
+													fullName:
+														beneficiary.first_name +
+														' ' +
+														beneficiary.last_name,
+													bankName: beneficiary.bank_name,
+													accountNumber: beneficiary.account_number,
+												});
+											}}>
+											<span className='text-white dark:text-[var(--primary-dark)]'>
+												<FaUserCircle size={32} />
+											</span>
+											<p className='font-medium md:text-md text-sm dark:text-[var(--whites-dark)] text-white text-center w-full'>
+												{beneficiary.first_name +
+													' .' +
+													beneficiary.last_name[0]}
+											</p>
 										</div>
-									</>
+									))
+								) : (
+									<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
+								)}
+								{userBeneficiaries.length > 0 && (
+									<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
 								)}
 							</div>
-							<div className='mt-2'>
-								<CardTitle title='Beneficiaries' />
-								<div className='beneficiary flex  items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
-									{userBeneficiaries.length > 0 ? (
-										userBeneficiaries.map((beneficiary) => {
-											return (
-												<div
-													key={beneficiary.id}
-													className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--primary)] bg-[var(--primary)]   min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer '
-													onClick={() => {
-														setuserBankInfo({
-															id: beneficiary.id.toString(),
-															shortName:
-																beneficiary.first_name +
-																'.' +
-																beneficiary.last_name[0],
-															fullName:
-																beneficiary.first_name +
-																' ' +
-																beneficiary.last_name,
-															bankName: beneficiary.bank_name,
-															accountNumber: beneficiary.account_number,
-														});
-														console.log(beneficiary);
-													}}>
-													<span className='text-[white] dark:text-[var(--primary-dark)]'>
-														<FaUserCircle size={32} />
-													</span>
-													<p className='font-medium md:text-md text-sm dark:text-[var(--whites-dark)] text-[white]  text-center w-full'>
-														{beneficiary.first_name +
-															' .' +
-															beneficiary.last_name[0]}
-													</p>
-												</div>
-											);
-										})
-									) : (
-										<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
-									)}
-									{userBeneficiaries.length > 0 ? (
-										<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
-									) : (
-										''
-									)}
-								</div>
-							</div>
 
+							{/* Transfer Forms */}
 							{isinter ? (
 								<InterbankForm
 									id={userBankInfo.id}
@@ -249,33 +246,46 @@ const page = () => {
 								<IntrabankForm />
 							)}
 						</div>
-						{/* History section */}
+
+						{/* Transaction History */}
 						<div className='pb-8 shadow-md w-1/2 pr-[16px] md:block hidden'>
 							<History />
 						</div>
 					</div>
 				</div>
-				{/* end of body */}
+
+				{/* Add Beneficiary Modal */}
 				<BeneficiaryModal
 					isOpen={isModalOpen}
 					onClose={() => setIsModalOpen(false)}
 					profileId={user?.id}
 					onSuccess={async () => {
 						if (!user?.id) return;
-
 						const { data: beneData, error } = await supabase
 							.from('beneficiaries')
 							.select('*')
 							.eq('profile_id', user.id);
-
-						if (error) {
-							console.error('Failed to refetch beneficiaries:', error);
-						} else {
+						if (!error) {
 							setUserBeneficiaries(beneData || []);
 						}
 					}}
 				/>
 			</div>
+			<ManageBeneficiariesModal
+				isOpen={isManageOpen}
+				onClose={() => setIsManageOpen(false)}
+				profileId={user?.id}
+				onUpdate={async () => {
+					const { data, error } = await supabase
+						.from('beneficiaries')
+						.select('*')
+						.eq('profile_id', user.id);
+
+					if (!error) {
+						setUserBeneficiaries(data || []);
+					}
+				}}
+			/>
 		</ThemeProvider>
 	);
 };

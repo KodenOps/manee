@@ -109,6 +109,8 @@ const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
 						type='text'
 						name='account_number'
 						placeholder='Account Number'
+						maxLength={10}
+						minLength={10}
 						value={formData.account_number}
 						onChange={handleChange}
 						className='input-style'
