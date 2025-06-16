@@ -48,6 +48,10 @@ const Page: React.FC = () => {
 	const [isInter, setIsInter] = useState(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isManageOpen, setIsManageOpen] = useState(false);
+	const [activeTab, setActiveTab] = useState<'transfer' | 'history'>(
+		'transfer'
+	);
+
 	const [userBeneficiaries, setUserBeneficiaries] = useState<Beneficiary[]>([]);
 	const [userBankInfo, setUserBankInfo] = useState<UserBankInfo>({
 		id: '',
@@ -163,8 +167,33 @@ const Page: React.FC = () => {
 						/>
 					</div>
 
-					<div className='flex w-full items-start justify-center py-6'>
-						<div className='mainTransSection px-[8px] md:ml-[210px] md:pr-[16px] flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8 relative'>
+					<div className='flex w-full md:flex-row flex-col items-start justify-center py-6'>
+						{/* Tab Switcher for Small Screens */}
+						<div className='md:hidden flex justify-center mb-4 w-full'>
+							<button
+								onClick={() => setActiveTab('transfer')}
+								className={`px-4 text-sm font-medium py-4 flex-1 ${
+									activeTab === 'transfer'
+										? 'bg-blue-600 text-white'
+										: 'bg-gray-200 text-gray-700'
+								}`}>
+								Transfer
+							</button>
+							<button
+								onClick={() => setActiveTab('history')}
+								className={`px-4 py-4  text-sm font-medium flex-1 ${
+									activeTab === 'history'
+										? 'bg-blue-600 text-white'
+										: 'bg-gray-200 text-gray-700'
+								}`}>
+								History
+							</button>
+						</div>
+
+						<div
+							className={`mainTransSection px-[8px] md:ml-[210px] md:pr-[16px] flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8 relative ${
+								activeTab === 'transfer' ? 'block' : 'hidden'
+							} md:block`}>
 							<CardTitle
 								title='Beneficiaries'
 								handleMenuClick={() => setMenuOpen(!menuOpen)}
@@ -240,7 +269,10 @@ const Page: React.FC = () => {
 							</div>
 						</div>
 
-						<div className='pb-8 shadow-md w-1/2 pr-[16px] md:block hidden'>
+						<div
+							className={`pb-8 shadow-md w-full md:w-1/2 pr-[16px] ${
+								activeTab === 'history' ? 'block' : 'hidden'
+							} md:block`}>
 							<History userId={user?.id} />
 						</div>
 					</div>

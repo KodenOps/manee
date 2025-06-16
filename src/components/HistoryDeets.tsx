@@ -37,10 +37,10 @@ const HistoryDeets = ({
 					</p>
 				</div>
 			</div>
-			<div className='right md:flex hidden items-center gap-8 pr-4 '>
+			{/* <div className='right md:flex hidden items-center gap-8 pr-4 '>
 				<FiDownload size={24} />
 				<GoShareAndroid size={24} />
-			</div>
+			</div> */}
 		</div>
 	);
 };

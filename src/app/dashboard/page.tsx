@@ -84,7 +84,7 @@ const Page = () => {
 					<HeaderNav userprofile={userProfile} />
 
 					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
-						{[...Array(2)].map((_, idx) => (
+						{[...Array(1)].map((_, idx) => (
 							<AccountCard
 								key={idx}
 								accountBal={userProfile.balance}
