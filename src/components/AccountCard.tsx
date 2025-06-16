@@ -20,7 +20,7 @@ const AccountCard = ({
 }: accountInfoType) => {
 	const [balVisible, setbalVisible] = useState(false);
 	return (
-		<div className='  md:h-[200px] min-w-[180px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full '>
+		<div className='  md:h-[200px] min-w-[180px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full'>
 			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px] w-full'>
 				<div className='top z-[20] md:px-0 px-4 w-full'>
 					<h4 className='md:text-[18px] text-[12px] font-semibold dark:text-[var(--accents)]'>
@@ -44,7 +44,10 @@ const AccountCard = ({
 					<div className='flex flex-row md:w-full w-full'>
 						<p className='md:text-[30px] text-[18px] tracking-widest font-bold text-left text-[var(--primary-dark)] dark:text-[var(--whites)] '>
 							{balVisible === true
-								? `$${accountBal.toLocaleString()}`
+								? `$${accountBal.toLocaleString(undefined, {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2,
+								  })}`
 								: 'xxx,xxx'}
 						</p>
 						{/* hide button */}

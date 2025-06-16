@@ -21,7 +21,7 @@ const SideBtns = () => {
 				<NavBtn
 					text='Dashboard'
 					IconText={LuLayoutGrid}
-					url='/'
+					url='/dashboard'
 				/>
 				<h4 className='px-[24px] font-medium text-sm mt-8 mb-4 tracking-wider text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
 					TRANSACTIONS

@@ -7,7 +7,7 @@ import IconCard from '@/components/IconCard';
 import SideNav from '@/components/SideNav';
 import AccountCard from '@/components/AccountCard';
 import HeaderNav from '@/components/HeaderNav';
-import { FaMoneyBillTransfer } from 'react-icons/fa6';
+import { FaGamepad, FaMoneyBillTransfer } from 'react-icons/fa6';
 import { GiPayMoney, GiUpgrade } from 'react-icons/gi';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
@@ -95,11 +95,11 @@ const Page = () => {
 						))}
 					</div>
 
-					<div className='w-full flex md:flex-row flex-col justify-between gap-2'>
+					<div className='w-full flex  md:flex-row flex-col justify-between gap-4'>
 						{/* Left section */}
-						<div className='md:w-[50%] w-full md:ml-[210px]'>
+						<div className=' md:ml-[210px] flex  flex-wrap w-full gap-4'>
 							{/* Quick Transactions */}
-							<div className='px-[8px] mt-4 shadow-md pb-4 relative'>
+							<div className='px-[8px] mt-4 shadow-md pb-4 relative md:w-auto w-full '>
 								<CardTitle
 									title='Quick Transactions'
 									handleMenuClick={() =>
@@ -121,37 +121,86 @@ const Page = () => {
 										]}
 									/>
 								)}
-								<div className='linkList mt-4 flex items-center md:justify-evenly px-2 justify-center md:gap-4 gap-2 w-full flex-wrap'>
+								<div className='linkList mt-4 flex items-center md:justify-evenly px-2 justify-center md:gap-4 gap-2 flex-wrap'>
 									<IconCard
 										IconName={FaMoneyBillTransfer}
-										boxText='Intrabank Transfer'
+										boxText='Fund Transfer'
 										url='/interbank'
 									/>
+
 									<IconCard
 										IconName={FaMoneyBillTransfer}
-										boxText='Interbank Transfer'
-										url='/interbank'
-									/>
-									<IconCard
-										IconName={FiPhoneCall}
-										boxText='Buy Airtime & Data'
+										boxText='Bank Transfer'
 										url='#'
 									/>
 									<IconCard
-										IconName={TbMoneybag}
-										boxText='Short-Term Loan'
-										url='#'
-									/>
-									<IconCard
-										IconName={TbMoneybag}
-										boxText='Play Games'
+										IconName={FaMoneyBillTransfer}
+										boxText='Bank Transfer'
 										url='#'
 									/>
 								</div>
 							</div>
 
+							{/* Entertainment */}
+							<div className='px-[16px] flex-1 mt-4 shadow-md pb-4 relative'>
+								<CardTitle
+									title='Entertainment'
+									handleMenuClick={() =>
+										setOpenMenu((prev) =>
+											prev === 'profile' ? null : 'profile'
+										)
+									}
+									IconName={FaGamepad}
+								/>
+								{openMenu === 'profile' && (
+									<Menuitems
+										items={[
+											{
+												label: 'Menu 1',
+												onClick: () => setOpenMenu(null),
+											},
+											{
+												label: 'Menu 2',
+												onClick: () => setOpenMenu(null),
+											},
+										]}
+									/>
+								)}
+								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
+									<IconCard
+										IconName={FaRegEdit}
+										boxText='Host Room'
+										url='#'
+									/>
+									<IconCard
+										IconName={FaRegCreditCard}
+										boxText='Join A Room'
+										url='#'
+									/>
+									<IconCard
+										IconName={GiUpgrade}
+										boxText='View Games'
+										url='#'
+									/>
+									<IconCard
+										IconName={GiUpgrade}
+										boxText='View Past Games'
+										url='#'
+									/>
+									<IconCard
+										IconName={GiUpgrade}
+										boxText='Upgrade Account'
+										url='#'
+									/>
+									<IconCard
+										IconName={MdLock}
+										boxText='Reset Authentications'
+										url='#'
+									/>
+								</div>
+							</div>
 							{/* Profile Management */}
-							<div className='px-[16px] mt-4 shadow-md pb-4 relative'>
+							<div className='px-[16px] mt-4 shadow-md pb-4 grow relative'>
 								<CardTitle
 									title='Profile Management'
 									handleMenuClick={() =>
@@ -179,31 +228,93 @@ const Page = () => {
 									<IconCard
 										IconName={FaRegEdit}
 										boxText='Account Update'
-										url='/interbank'
+										url='#'
 									/>
 									<IconCard
 										IconName={FaRegCreditCard}
 										boxText='Request Debit Card'
-										url='/interbank'
+										url='#'
 									/>
 									<IconCard
 										IconName={GiUpgrade}
 										boxText='Upgrade Account'
-										url='/interbank'
+										url='#'
+									/>
+									<IconCard
+										IconName={GiUpgrade}
+										boxText='Upgrade Account'
+										url='#'
+									/>
+									<IconCard
+										IconName={GiUpgrade}
+										boxText='Upgrade Account'
+										url='#'
 									/>
 									<IconCard
 										IconName={MdLock}
 										boxText='Reset Authentications'
-										url='/interbank'
+										url='#'
+									/>
+									<IconCard
+										IconName={MdLock}
+										boxText='Reset Authentications'
+										url='#'
+									/>
+									<IconCard
+										IconName={MdLock}
+										boxText='Reset Authentications'
+										url='#'
 									/>
 								</div>
 							</div>
+							{/* Quick Transactions
+							<div className='px-[8px] mt-4 shadow-md pb-4 relative md:w-auto w-full '>
+								<CardTitle
+									title='Quick Transactions'
+									handleMenuClick={() =>
+										setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
+									}
+									IconName={LuLayoutGrid}
+								/>
+								{openMenu === 'quick' && (
+									<Menuitems
+										items={[
+											{
+												label: 'Menu 1',
+												onClick: () => setOpenMenu(null),
+											},
+											{
+												label: 'Menu 2',
+												onClick: () => setOpenMenu(null),
+											},
+										]}
+									/>
+								)}
+								<div className='linkList mt-4 flex items-center md:justify-evenly px-2 justify-center md:gap-4 gap-2 flex-wrap'>
+									<IconCard
+										IconName={FaMoneyBillTransfer}
+										boxText='Fund Transfer'
+										url='/interbank'
+									/>
+
+									<IconCard
+										IconName={FaMoneyBillTransfer}
+										boxText='Bank Transfer'
+										url='#'
+									/>
+									<IconCard
+										IconName={FaMoneyBillTransfer}
+										boxText='Bank Transfer'
+										url='#'
+									/>
+								</div>
+							</div> */}
 						</div>
 
 						{/* Right section - History */}
-						<div className='md:w-[45%] w-full px-[8px] mt-4 shadow-md pb-4 mr-[24px]'>
+						{/* <div className='md:w-[45%] w-full px-[8px] mt-4 shadow-md pb-4 mr-[24px]'>
 							<History />
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>

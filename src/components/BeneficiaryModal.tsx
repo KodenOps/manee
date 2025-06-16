@@ -1,46 +1,54 @@
-// BeneficiaryModal.tsx
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import supabase from '@/helper/supabaseClient';
-import { NigeriaBanks } from '@/data/BankDb'; // Adjust the import path as necessary
 import Button from './Button';
-const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
-	useEffect(() => {
-		if (isOpen && NigeriaBanks.length > 0) {
-			setFormData((prev) => ({
-				...prev,
-				bank_name: NigeriaBanks[0].fullName,
-				bank_short_name: NigeriaBanks[0].shortName,
-			}));
-		}
-	}, [isOpen]);
-	const [bankShortCode, setBankShortCode] = useState('');
-	const [formData, setFormData] = useState({
-		first_name: '',
-		last_name: '',
-		account_number: '',
-		bank_name: '',
-		bank_short_name: '',
-	});
 
+const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
+	const [accountNumber, setAccountNumber] = useState('');
+	const [accountName, setAccountName] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 
-	const handleChange = (e: any) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
-	};
+	useEffect(() => {
+		const resolveAccount = async () => {
+			if (accountNumber.length === 10) {
+				const { data, error } = await supabase
+					.from('profiles')
+					.select('first_name, last_name')
+					.eq('account_number', accountNumber)
+					.single();
+
+				if (error || !data) {
+					setAccountName('');
+					setError('Account not found.');
+				} else {
+					setAccountName(`${data.first_name} ${data.last_name}`);
+					setError('');
+				}
+			} else {
+				setAccountName('');
+				setError('');
+			}
+		};
+		resolveAccount();
+	}, [accountNumber]);
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 		setLoading(true);
 		setError('');
 
-		// Step 1: Check if account number already exists
+		if (!accountNumber || accountName === '') {
+			setError('Please enter a valid account number.');
+			setLoading(false);
+			return;
+		}
+
 		const { data: existing, error: fetchError } = await supabase
 			.from('beneficiaries')
 			.select('*')
-			.eq('account_number', formData.account_number)
-			.eq('profile_id', profileId); // restrict to this user's beneficiaries
+			.eq('account_number', accountNumber)
+			.eq('profile_id', profileId);
 
 		if (fetchError) {
 			setError('Something went wrong while checking existing data.');
@@ -54,12 +62,14 @@ const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
 			return;
 		}
 
-		// Step 2: Proceed to insert if not existing
+		const [firstName, lastName] = accountName.split(' ');
 		const now = new Date().toISOString();
 
 		const { error: insertError } = await supabase.from('beneficiaries').insert([
 			{
-				...formData,
+				first_name: firstName,
+				last_name: lastName,
+				account_number: accountNumber,
 				profile_id: profileId,
 				created_at: now,
 				updated_at: now,
@@ -69,15 +79,8 @@ const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
 		if (insertError) {
 			setError(insertError.message);
 		} else {
-			// ✅ Clear form
-			setFormData({
-				first_name: '',
-				last_name: '',
-				account_number: '',
-				bank_name: '',
-				bank_short_name: '',
-			});
-
+			setAccountNumber('');
+			setAccountName('');
 			onSuccess();
 			onClose();
 		}
@@ -98,96 +101,34 @@ const BeneficiaryModal = ({ isOpen, onClose, profileId, onSuccess }: any) => {
 					className='space-y-4'>
 					<input
 						type='text'
-						name='first_name'
-						placeholder='First Name'
-						value={formData.first_name}
-						onChange={handleChange}
-						className='input-style'
-						required
-					/>
-					<input
-						type='text'
-						name='last_name'
-						placeholder='Last Name'
-						value={formData.last_name}
-						onChange={handleChange}
-						className='input-style'
-						required
-					/>
-					<input
-						type='text'
-						name='account_number'
 						placeholder='Account Number'
+						value={accountNumber}
+						onChange={(e) =>
+							setAccountNumber(e.target.value.replace(/\D/g, ''))
+						}
 						maxLength={10}
 						minLength={10}
-						value={formData.account_number}
-						onChange={(e) => {
-							const numericOnly = e.target.value.replace(/\D/g, '');
-							setFormData({ ...formData, account_number: numericOnly });
-						}}
 						className='input-style'
 						required
 					/>
-					<select
-						required
-						name='bank_name'
-						className='input-style '
-						value={formData.bank_name}
-						onChange={(e) => {
-							const selectedBank = NigeriaBanks.find(
-								(bank) => bank.fullName === e.target.value
-							);
-
-							if (selectedBank) {
-								setFormData((prev) => ({
-									...prev,
-									bank_name: selectedBank.fullName,
-									bank_short_name: selectedBank.shortName,
-								}));
-							}
-						}}
-						id=''>
-						{NigeriaBanks.map((bank) => (
-							<option
-								key={bank.id}
-								value={bank.fullName}
-								className='bg-transparent text-black py-2 px-10 '
-								onClick={(e) => {
-									setBankShortCode(bank.shortName);
-								}}>
-								{bank.fullName}
-							</option>
-						))}
-					</select>
 					<input
 						type='text'
+						placeholder='Account Name'
+						value={accountName}
 						disabled
-						name='bank_short_name'
-						placeholder='Short Name'
-						value={formData.bank_short_name}
-						// onChange={handleChange}
-						className='input-style'
-						required
+						className='input-style bg-gray-100 dark:bg-gray-800'
 					/>
 					{error && <p className='text-red-500 text-sm'>{error}</p>}
 					<div className='flex justify-center gap-4 w-full items-center'>
 						<button
 							type='button'
 							onClick={onClose}
-							className='bg-red-400 text-[var(--whites] px-4 py-2 rounded w-full'>
+							className='bg-red-400 text-[var(--whites)] px-4 py-2 rounded w-full'>
 							Close Modal
 						</button>
-						{/* <Button
-							text={loading ? 'Adding...' : 'Add Beneficiary'}
-							type='submit'
-							onclickfunction={(e) => {
-								e.preventDefault();
-							}}
-						/> */}
 						<button
 							type='submit'
-							// onClick={handleClose}
-							disabled={loading}
+							disabled={loading || !accountName}
 							className='bg-[var(--primary)] dark:bg-[var(--secondary-dark)] dark:text-[var(--primary-dark)] text-[var(--whites)] w-full px-4 py-2 rounded'>
 							{loading ? 'Adding...' : 'Add Beneficiary'}
 						</button>

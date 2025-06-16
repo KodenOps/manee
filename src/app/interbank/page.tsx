@@ -1,36 +1,27 @@
 'use client';
-import AccountCard from '@/components/AccountCard';
-import BeneCard from '@/components/BeneficiaryBox';
-import CardTitle from '@/components/CardTitle';
-import HeaderNav from '@/components/HeaderNav';
-import History from '@/components/History';
-import InterbankForm from '@/components/InterbankForm';
-import IntrabankForm from '@/components/Intrabankforms';
-import SideNav from '@/components/SideNav';
-import { ThemeProvider } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
+import { ThemeProvider } from 'next-themes';
 import { FaUserCircle } from 'react-icons/fa';
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
-import BeneficiaryModal from '@/components/BeneficiaryModal';
+import SideNav from '@/components/SideNav';
+import HeaderNav from '@/components/HeaderNav';
+import AccountCard from '@/components/AccountCard';
+import CardTitle from '@/components/CardTitle';
 import AddNewBene from '@/components/AddNewBene';
+import History from '@/components/History';
+import InterbankForm from '@/components/InterbankForm';
+import IntrabankForm from '@/components/Intrabankforms';
+import BeneficiaryModal from '@/components/BeneficiaryModal';
 import ManageBeneficiariesModal from '@/components/ManageBeneficiariesModal';
 
-interface UserBankInfo {
-	id: string;
-	shortName: string;
-	fullName: string;
-	bankName: string;
-	accountNumber: string;
-}
-
-type UserProfile = {
+interface UserProfile {
 	first_name: string;
 	last_name: string;
 	account_number: string;
 	balance: number;
 	email: string;
-};
+}
 
 interface Beneficiary {
 	id: number;
@@ -38,34 +29,46 @@ interface Beneficiary {
 	first_name: string;
 	last_name: string;
 	account_number: string;
-	bank_name: string;
-	bank_short_name: string;
 	created_at: string;
 	updated_at: string;
 }
 
-const page = () => {
+interface UserBankInfo {
+	id: string;
+	shortName: string;
+	fullName: string;
+	accountNumber: string;
+}
+
+const Page: React.FC = () => {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-	const [isinter, setisinter] = useState(true);
-	const [loading, setLoading] = useState(true);
-	const [userBeneficiaries, setUserBeneficiaries] = useState<Beneficiary[]>([]);
 	const [user, setUser] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [isInter, setIsInter] = useState(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isManageOpen, setIsManageOpen] = useState(false);
-
-	const [userBankInfo, setuserBankInfo] = useState<UserBankInfo>({
+	const [userBeneficiaries, setUserBeneficiaries] = useState<Beneficiary[]>([]);
+	const [userBankInfo, setUserBankInfo] = useState<UserBankInfo>({
 		id: '',
 		shortName: '',
 		fullName: '',
-		bankName: '',
 		accountNumber: '',
 	});
 
-	// Dropdown logic
-	const [menuOpen, setMenuOpen] = useState(false);
 	const kebabRef = useRef<HTMLDivElement>(null);
 	const dropdownRef = useRef<HTMLDivElement>(null);
+	const fetchUserProfile = async () => {
+		const { data, error } = await supabase
+			.from('profiles')
+			.select('first_name, last_name, account_number, balance')
+			.eq('id', user.id)
+			.single();
 
+		if (data) {
+			setUserProfile({ ...data, email: user.email || '' });
+		}
+	};
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
@@ -76,43 +79,33 @@ const page = () => {
 				setMenuOpen(false);
 			}
 		};
-
 		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
 	useEffect(() => {
-		const fetchProfileAndBeneficiaries = async () => {
+		const fetchData = async () => {
 			try {
-				const userResponse = await supabase.auth.getUser();
-				const user = userResponse.data.user;
+				const { data: userData } = await supabase.auth.getUser();
+				const user = userData?.user;
 				setUser(user);
 
 				if (user) {
-					const { data: profile, error: profileError } = await supabase
-						.from('profiles')
-						.select('first_name, last_name, account_number, balance')
-						.eq('id', user.id)
-						.single();
+					const [{ data: profile }, { data: beneficiaries }] =
+						await Promise.all([
+							supabase
+								.from('profiles')
+								.select('first_name, last_name, account_number, balance')
+								.eq('id', user.id)
+								.single(),
+							supabase
+								.from('beneficiaries')
+								.select('*')
+								.eq('profile_id', user.id),
+						]);
 
-					if (!profileError && profile) {
-						setUserProfile({
-							...profile,
-							email: user.email || '',
-						});
-					}
-
-					const { data: beneficiaries, error: beneficiariesError } =
-						await supabase
-							.from('beneficiaries')
-							.select('*')
-							.eq('profile_id', user.id);
-
-					if (!beneficiariesError && beneficiaries) {
-						setUserBeneficiaries(beneficiaries);
-					}
+					if (profile) setUserProfile({ ...profile, email: user.email || '' });
+					if (beneficiaries) setUserBeneficiaries(beneficiaries);
 				}
 			} catch (error) {
 				console.error('Unexpected error:', error);
@@ -120,9 +113,25 @@ const page = () => {
 				setLoading(false);
 			}
 		};
-
-		fetchProfileAndBeneficiaries();
+		fetchData();
 	}, []);
+
+	const handleBeneficiaryClick = (b: Beneficiary) => {
+		setUserBankInfo({
+			id: String(b.id),
+			shortName: `${b.first_name}.${b.last_name[0]}`,
+			fullName: `${b.first_name} ${b.last_name}`,
+			accountNumber: b.account_number,
+		});
+	};
+
+	const refreshBeneficiaries = async () => {
+		const { data } = await supabase
+			.from('beneficiaries')
+			.select('*')
+			.eq('profile_id', user.id);
+		if (data) setUserBeneficiaries(data);
+	};
 
 	if (loading || !userProfile) {
 		return (
@@ -154,16 +163,14 @@ const page = () => {
 						/>
 					</div>
 
-					<div className='flex w-full items-start justify-start mt-4 py-8'>
+					<div className='flex w-full items-start justify-center py-6'>
 						<div className='mainTransSection px-[8px] md:ml-[210px] md:pr-[16px] flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8 relative'>
-							{/* Card Title with Dropdown Trigger */}
 							<CardTitle
 								title='Beneficiaries'
-								handleMenuClick={() => setMenuOpen((prev) => !prev)}
+								handleMenuClick={() => setMenuOpen(!menuOpen)}
 								menuRef={kebabRef}
 							/>
 
-							{/* Dropdown modal below kebab */}
 							{menuOpen && (
 								<div
 									ref={dropdownRef}
@@ -193,101 +200,68 @@ const page = () => {
 								</div>
 							)}
 
-							{/* Beneficiaries Section */}
-							<div className='beneficiary flex items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden'>
-								{userBeneficiaries.length > 0 ? (
-									userBeneficiaries.map((beneficiary) => (
-										<div
-											key={beneficiary.id}
-											className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--primary)] bg-[var(--primary)] min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer'
-											onClick={() => {
-												setuserBankInfo({
-													id: beneficiary.id.toString(),
-													shortName:
-														beneficiary.first_name +
-														'.' +
-														beneficiary.last_name[0],
-													fullName:
-														beneficiary.first_name +
-														' ' +
-														beneficiary.last_name,
-													bankName: beneficiary.bank_name,
-													accountNumber: beneficiary.account_number,
-												});
-											}}>
-											<span className='text-white dark:text-[var(--primary-dark)]'>
-												<FaUserCircle size={32} />
-											</span>
-											<p className='font-medium md:text-md text-sm dark:text-[var(--whites-dark)] text-white text-center w-full'>
-												{beneficiary.first_name +
-													' .' +
-													beneficiary.last_name[0]}
-											</p>
-										</div>
-									))
-								) : (
-									<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
-								)}
-								{userBeneficiaries.length > 0 && (
-									<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
-								)}
+							<div className='beneficiary flex items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden px-6'>
+								{userBeneficiaries.map((b) => (
+									<div
+										key={b.id}
+										className='flex flex-col items-center shadow-sm rounded-[10px] dark:bg-[var(--primary)] bg-[var(--primary)] min-w-[140px] h-[80px] px-[16px] py-[12px] gap-2 cursor-pointer'
+										onClick={() => handleBeneficiaryClick(b)}>
+										<span className='text-white dark:text-[var(--primary-dark)]'>
+											<FaUserCircle size={32} />
+										</span>
+										<p className='font-medium md:text-md text-sm dark:text-[var(--whites-dark)] text-white text-center w-full'>
+											{`${b.first_name} .${b.last_name[0]}`}
+										</p>
+									</div>
+								))}
+								<AddNewBene openAddBeneModal={() => setIsModalOpen(true)} />
 							</div>
 
-							{/* Transfer Forms */}
-							{isinter ? (
-								<InterbankForm
-									id={userBankInfo.id}
-									accountNumber={userBankInfo.accountNumber}
-									shortName={userBankInfo.shortName}
-									fullName={userBankInfo.fullName}
-									bankName={userBankInfo.bankName}
-								/>
-							) : (
-								<IntrabankForm />
-							)}
+							<div className='w-full px-6'>
+								{isInter ? (
+									<InterbankForm
+										key={userBankInfo.accountNumber}
+										id={user.id}
+										fullName={userBankInfo.fullName}
+										accountNumber={userBankInfo.accountNumber}
+										onSuccess={() => {
+											fetchUserProfile();
+											setUserBankInfo({
+												id: '',
+												fullName: '',
+												shortName: '',
+												accountNumber: '',
+											});
+										}}
+									/>
+								) : (
+									<IntrabankForm />
+								)}
+							</div>
 						</div>
 
-						{/* Transaction History */}
 						<div className='pb-8 shadow-md w-1/2 pr-[16px] md:block hidden'>
-							<History />
+							<History userId={user?.id} />
 						</div>
 					</div>
 				</div>
 
-				{/* Add Beneficiary Modal */}
 				<BeneficiaryModal
 					isOpen={isModalOpen}
 					onClose={() => setIsModalOpen(false)}
 					profileId={user?.id}
-					onSuccess={async () => {
-						if (!user?.id) return;
-						const { data: beneData, error } = await supabase
-							.from('beneficiaries')
-							.select('*')
-							.eq('profile_id', user.id);
-						if (!error) {
-							setUserBeneficiaries(beneData || []);
-						}
-					}}
+					onSuccess={refreshBeneficiaries}
+				/>
+
+				<ManageBeneficiariesModal
+					isOpen={isManageOpen}
+					onClose={() => setIsManageOpen(false)}
+					profileId={user?.id}
+					onUpdate={refreshBeneficiaries}
 				/>
 			</div>
-			<ManageBeneficiariesModal
-				isOpen={isManageOpen}
-				onClose={() => setIsManageOpen(false)}
-				profileId={user?.id}
-				onUpdate={async () => {
-					const { data, error } = await supabase
-						.from('beneficiaries')
-						.select('*')
-						.eq('profile_id', user.id);
-
-					if (!error) {
-						setUserBeneficiaries(data || []);
-					}
-				}}
-			/>
 		</ThemeProvider>
 	);
 };
 
-export default WithAuthentication(page);
+export default WithAuthentication(Page);
