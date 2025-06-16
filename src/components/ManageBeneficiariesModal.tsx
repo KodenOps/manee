@@ -9,7 +9,7 @@ interface Beneficiary {
 	first_name: string;
 	last_name: string;
 	account_number: string;
-	bank_name: string;
+	// bank_name: string;
 }
 
 interface Props {
@@ -37,19 +37,25 @@ const ManageBeneficiariesModal = ({
 	);
 
 	useEffect(() => {
-		if (!isOpen) return;
+		if (!isOpen || !profileId) return; // ← ensure profileId exists
+
 		setCurrentPage(1); // reset page on open
 
 		const fetchBeneficiaries = async () => {
 			setLoading(true);
+
 			const { data, error } = await supabase
 				.from('beneficiaries')
-				.select('id, first_name, last_name, account_number, bank_name')
+				.select('id, first_name, last_name, account_number')
 				.eq('profile_id', profileId);
 
 			if (!error && data) {
+				console.log('Fetched:', data); // ← debug check
 				setBeneficiaries(data);
+			} else {
+				console.error('Error:', error?.message);
 			}
+
 			setLoading(false);
 		};
 
@@ -112,7 +118,7 @@ const ManageBeneficiariesModal = ({
 											{b.first_name} {b.last_name}
 										</p>
 										<p className='text-sm text-gray-600 dark:text-gray-300'>
-											{b.bank_name} | {b.account_number}
+											{b.account_number}
 										</p>
 									</div>
 									<button
