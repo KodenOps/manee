@@ -17,7 +17,7 @@ const SideBtns = () => {
 	return (
 		<div>
 			{/* FIRST LINK BOX */}
-			<div className='topLinks mt-6'>
+			<div className='topLinks mt-0'>
 				<NavBtn
 					text='Dashboard'
 					IconText={LuLayoutGrid}
@@ -79,7 +79,7 @@ const SideBtns = () => {
 					url='/login'
 				/>
 			</div>
-			<div className='user md:hidden flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
+			{/* <div className='user md:hidden flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
 				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'></div>
 				<div className='nameemail'>
 					<p className='font-medium text-[var(--primary)] dark:text-[var(--whites-dark)]'>
@@ -87,7 +87,7 @@ const SideBtns = () => {
 					</p>
 					<p className='text-[12px] font-normal'>ayopumping@example.com</p>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 };
