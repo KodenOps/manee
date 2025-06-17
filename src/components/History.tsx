@@ -189,7 +189,7 @@ const History: React.FC<HistoryProps> = ({
 									IconName={isCredit ? IoMdTrendingDown : IoMdTrendingUp}
 									isSuccess={isCredit}
 								/>
-								<div className='absolute top-0 right-8 flex gap-8 h-full items-center   text-lg'>
+								<div className='absolute top-0 right-4 flex gap-8 h-full items-center   text-lg'>
 									<button
 										onClick={() => downloadReceipt(tx)}
 										title='Download Receipt'>
@@ -198,14 +198,14 @@ const History: React.FC<HistoryProps> = ({
 											color='grey'
 										/>
 									</button>
-									<button
+									{/* <button
 										onClick={() => alert('Share functionality coming soon')}
 										title='Share Receipt'>
 										<FiShare2
 											size={24}
 											color='#4469b4'
 										/>
-									</button>
+									</button> */}
 								</div>
 							</div>
 						);
