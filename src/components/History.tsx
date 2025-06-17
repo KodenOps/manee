@@ -10,13 +10,17 @@ import supabase from '@/helper/supabaseClient';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import mylogo from '../../public/assets/logo-dash.svg';
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 8;
 
 interface HistoryProps {
 	userId?: string;
+	refreshFlag?: number;
 }
 
-const History: React.FC<HistoryProps> = ({ userId: initialUserId }) => {
+const History: React.FC<HistoryProps> = ({
+	userId: initialUserId,
+	refreshFlag,
+}) => {
 	const [userId, setUserId] = useState<string>(initialUserId || '');
 	const [openMenu, setOpenMenu] = useState<string | null>(null);
 	const [transactions, setTransactions] = useState<any[]>([]);
@@ -59,7 +63,7 @@ const History: React.FC<HistoryProps> = ({ userId: initialUserId }) => {
 		if (userId) {
 			fetchTransactions(userId);
 		}
-	}, [page]);
+	}, [userId, page, refreshFlag]);
 
 	const fetchTransactions = async (uid: string) => {
 		const start = page * PAGE_SIZE;
@@ -121,7 +125,7 @@ const History: React.FC<HistoryProps> = ({ userId: initialUserId }) => {
 				['Transaction ID', tx.id],
 				['Date', formatTime(tx.created_at)],
 				['Type', isCredit ? 'Credit' : 'Debit'],
-				['Amount', `₦${tx.amount.toLocaleString()}`],
+				['Amount', `$${tx.amount.toLocaleString()}`],
 				[
 					isCredit ? 'From' : 'To',
 					isCredit ? tx.sender_account : tx.recipient_account,
@@ -185,16 +189,22 @@ const History: React.FC<HistoryProps> = ({ userId: initialUserId }) => {
 									IconName={isCredit ? IoMdTrendingDown : IoMdTrendingUp}
 									isSuccess={isCredit}
 								/>
-								<div className='absolute top-2 right-2 flex gap-2 text-blue-500 text-lg'>
+								<div className='absolute top-0 right-8 flex gap-8 h-full items-center   text-lg'>
 									<button
 										onClick={() => downloadReceipt(tx)}
 										title='Download Receipt'>
-										<FiDownload />
+										<FiDownload
+											size={24}
+											color='grey'
+										/>
 									</button>
 									<button
 										onClick={() => alert('Share functionality coming soon')}
 										title='Share Receipt'>
-										<FiShare2 />
+										<FiShare2
+											size={24}
+											color='#4469b4'
+										/>
 									</button>
 								</div>
 							</div>

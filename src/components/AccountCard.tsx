@@ -19,6 +19,8 @@ const AccountCard = ({
 	accountName,
 }: accountInfoType) => {
 	const [balVisible, setbalVisible] = useState(false);
+	const [copied, setCopied] = useState(false);
+
 	return (
 		<div className='  md:h-[200px] min-w-[180px] h-[150px] rounded-md relative overflow-hidden flex-1 w-full'>
 			<div className='content  z-[100] flex flex-col md:gap-0 h-full justify-between md:pl-[24px] pl-0 px-[8px] py-[20px] w-full'>
@@ -31,8 +33,19 @@ const AccountCard = ({
 					</h4>
 					<p className='md:font-bold font-normal md:text-lg text-sm tracking-widest flex items-center gap-2 text-[var(--primary-dark)] dark:text-[var(--whites)]'>
 						{accountNum}{' '}
-						<span className='text-sm font-mono cursor-pointer'>
-							<FaRegCopy size={14} />
+						<span
+							className='text-sm font-mono cursor-pointer'
+							onClick={() => {
+								navigator.clipboard.writeText(accountNum);
+								setCopied(true);
+								setTimeout(() => setCopied(false), 2000);
+							}}
+							title='Copy account number'>
+							{copied ? (
+								<span className='text-xs text-green-500'>Copied!</span>
+							) : (
+								<FaRegCopy size={14} />
+							)}
 						</span>
 					</p>
 				</div>

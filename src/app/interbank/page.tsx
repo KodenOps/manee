@@ -47,6 +47,7 @@ const Page: React.FC = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isInter, setIsInter] = useState(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [refreshFlag, setRefreshFlag] = useState(0);
 	const [isManageOpen, setIsManageOpen] = useState(false);
 	const [activeTab, setActiveTab] = useState<'transfer' | 'history'>(
 		'transfer'
@@ -167,7 +168,7 @@ const Page: React.FC = () => {
 						/>
 					</div>
 
-					<div className='flex w-full md:flex-row flex-col items-start justify-center py-6'>
+					<div className='flex w-full md:flex-row flex-col items-stretch justify-center py-6'>
 						{/* Tab Switcher for Small Screens */}
 						<div className='md:hidden flex justify-center mb-4 w-full'>
 							<button
@@ -191,7 +192,7 @@ const Page: React.FC = () => {
 						</div>
 
 						<div
-							className={`mainTransSection px-[8px] md:ml-[210px] md:pr-[16px] flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8 relative ${
+							className={`mainTransSection px-[8px]  md:ml-[210px] md:pr-[16px] flex-1 ml-0 md:w-[45%] w-full shadow-md pb-8 relative ${
 								activeTab === 'transfer' ? 'block' : 'hidden'
 							} md:block`}>
 							<CardTitle
@@ -229,7 +230,7 @@ const Page: React.FC = () => {
 								</div>
 							)}
 
-							<div className='beneficiary flex items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden px-6'>
+							<div className='beneficiary flex flex-1 items-center justify-start w-full overflow-x-scroll gap-6 py-4 scrollbar-hidden px-6'>
 								{userBeneficiaries.map((b) => (
 									<div
 										key={b.id}
@@ -254,7 +255,8 @@ const Page: React.FC = () => {
 										fullName={userBankInfo.fullName}
 										accountNumber={userBankInfo.accountNumber}
 										onSuccess={() => {
-											fetchUserProfile();
+											setRefreshFlag((prev) => prev + 1); // ✅ Trigger History update
+											fetchUserProfile(); // ✅ Update account balance
 											setUserBankInfo({
 												id: '',
 												fullName: '',
@@ -273,7 +275,10 @@ const Page: React.FC = () => {
 							className={`pb-8 shadow-md w-full md:w-1/2 pr-[16px] ${
 								activeTab === 'history' ? 'block' : 'hidden'
 							} md:block`}>
-							<History userId={user?.id} />
+							<History
+								userId={user?.id}
+								refreshFlag={refreshFlag}
+							/>
 						</div>
 					</div>
 				</div>
