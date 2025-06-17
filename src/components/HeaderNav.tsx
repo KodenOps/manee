@@ -122,9 +122,10 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 			<div
 				className={
 					!menuUp
-						? 'w-screen bg-[#333333c3] h-screen top-0 right-0 -z-[100] top-0 fixed'
+						? 'w-screen bg-[#333333c3] h-screen  right-0 -z-[100] top-0 fixed'
 						: 'hidden'
-				}>
+				}
+				onClick={() => setmenuUp(!menuUp)}>
 				<div
 					className={
 						!menuUp
