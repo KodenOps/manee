@@ -122,7 +122,7 @@ const Page = () => {
 										]}
 									/>
 								)}
-								<div className='linkList mt-4 flex items-center justify-start px-8  md:gap-4 gap-2 flex-wrap'>
+								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
 									<IconCard
 										IconName={FaMoneyBillTransfer}
 										boxText='Fund Transfer'
