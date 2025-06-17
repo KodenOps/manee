@@ -102,11 +102,11 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 			</div>
 
 			{/* mobile navbar */}
-			<div className='logo md:hidden'>
+			<div className='logo md:hidden '>
 				<Logo />
 			</div>
 			<div
-				className='md:hidden text-[var(--primary)] dark:text-[var(--secondary-dark)] z-20'
+				className='md:hidden text-[var(--primary)] fixed right-6 top-8 dark:text-[var(--secondary-dark)] z-20'
 				onClick={() => setmenuUp(!menuUp)}>
 				{menuUp ? (
 					<IoMenu size={32} />
@@ -122,13 +122,13 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 			<div
 				className={
 					!menuUp
-						? 'w-screen bg-[#333333c3] h-screen top-0 right-0 -z-[100] absolute'
+						? 'w-screen bg-[#333333c3] h-screen top-0 right-0 -z-[100] top-0 fixed'
 						: 'hidden'
 				}>
 				<div
 					className={
 						!menuUp
-							? 'w-[60%] h-screen top-0 right-0 absolute bg-[var(--primary-dark)] pt-[80px]'
+							? 'w-[60%] h-screen top-0 right-0 fixed bg-[var(--primary-dark)] pt-[80px]'
 							: 'hidden'
 					}>
 					<SideBtns />

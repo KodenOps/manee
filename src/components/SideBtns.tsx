@@ -79,15 +79,6 @@ const SideBtns = () => {
 					url='/login'
 				/>
 			</div>
-			{/* <div className='user md:hidden flex flex-col justify-start px-4 items-start mt-8 gap-2 cursor-pointer'>
-				<div className='userimg text-[var(--primary)] dark:text-[var(--secondary-dark)]'></div>
-				<div className='nameemail'>
-					<p className='font-medium text-[var(--primary)] dark:text-[var(--whites-dark)]'>
-						Ayomide .F.
-					</p>
-					<p className='text-[12px] font-normal'>ayopumping@example.com</p>
-				</div>
-			</div> */}
 		</div>
 	);
 };
