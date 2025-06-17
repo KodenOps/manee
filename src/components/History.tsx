@@ -198,14 +198,7 @@ const History: React.FC<HistoryProps> = ({
 											color='grey'
 										/>
 									</button>
-									{/* <button
-										onClick={() => alert('Share functionality coming soon')}
-										title='Share Receipt'>
-										<FiShare2
-											size={24}
-											color='#4469b4'
-										/>
-									</button> */}
+									    
 								</div>
 							</div>
 						);
