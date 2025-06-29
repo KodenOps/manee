@@ -8,7 +8,9 @@ import SideNav from '@/components/SideNav';
 import AccountCard from '@/components/AccountCard';
 import HeaderNav from '@/components/HeaderNav';
 import {
+	FaBullseye,
 	FaGamepad,
+	FaHandHoldingDollar,
 	FaMoneyBillTransfer,
 	FaScaleBalanced,
 } from 'react-icons/fa6';
@@ -17,13 +19,19 @@ import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
 import { TbMoneybag } from 'react-icons/tb';
 import History from '@/components/History';
-import { FaUserCog, FaRegEdit, FaRegCreditCard } from 'react-icons/fa';
+import {
+	FaUserCog,
+	FaRegEdit,
+	FaRegCreditCard,
+	FaHandHoldingUsd,
+} from 'react-icons/fa';
 import { MdLock } from 'react-icons/md';
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
 import Menuitems from '@/components/Menuitem';
 import CreateRoomModal from '@/components/CreateRoomModal';
 import NavBox from '@/components/NavBox';
+import { AiOutlinePieChart } from 'react-icons/ai';
 
 type UserProfile = {
 	first_name: string;
@@ -91,15 +99,21 @@ const Page = () => {
 					<HeaderNav userprofile={userProfile} />
 
 					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
-						{[...Array(1)].map((_, idx) => (
-							<AccountCard
-								key={idx}
-								accountBal={userProfile.balance}
-								accountNum={userProfile.account_number}
-								accountType='Savings'
-								accountName={`${userProfile.first_name} ${userProfile.last_name}`}
-							/>
-						))}
+						{/* {[...Array(2)].map((_, idx) => ( */}
+						<AccountCard
+							// key={idx}
+							accountBal={userProfile.balance}
+							accountNum={userProfile.account_number}
+							accountType='Income'
+							accountName={`${userProfile.first_name} ${userProfile.last_name}`}
+						/>
+						<AccountCard
+							// key={idx}
+							accountBal={userProfile.balance}
+							accountNum={userProfile.account_number}
+							accountType='Savings'
+							accountName={`${userProfile.first_name} ${userProfile.last_name}`}
+						/>
 					</div>
 
 					{/* <div className='w-full  gap-4'> */}
@@ -129,7 +143,7 @@ const Page = () => {
 										]}
 									/>
 								)}
-								<div className='linkList mt-4 flex items-center md:justify-start justify-center md:gap-4 px-4 gap-2 w-full flex-wrap'>
+								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 px-4 gap-2 w-full flex-wrap'>
 									{showModal && (
 										<CreateRoomModal onClose={() => setShowModal(false)} />
 									)}
@@ -140,21 +154,27 @@ const Page = () => {
 										url='/interbank'
 									/>
 									<NavBox
-										IconName={FaScaleBalanced}
+										IconName={AiOutlinePieChart}
 										boxText='Personal Budgets'
 										subtext='Track monthly budget'
 										url='#'
 									/>
 									<NavBox
-										IconName={FaScaleBalanced}
+										IconName={FaBullseye}
 										boxText='Personal Goals'
 										subtext='Track financial goals'
 										url='#'
 									/>
 									<NavBox
-										IconName={FaScaleBalanced}
+										IconName={FaHandHoldingDollar}
 										boxText='Thrift (Ajo) Contribution'
 										subtext='Save with friends '
+										url='#'
+									/>
+									<NavBox
+										IconName={FaScaleBalanced}
+										boxText='Finance Management'
+										subtext='Track your finance'
 										url='#'
 									/>
 									<NavBox
