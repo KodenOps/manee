@@ -35,7 +35,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 
 	if (!mounted) {
 		return (
-			<div className='flex flex-col justify-center items-center h-full w-full bg-[var(--whites)] dark:bg-[var(--primary-dark)] fixed top-0 z-[500] overflow-hidden'>
+			<div className='flex flex-col justify-center items-center h-full w-full bg-[var(--whites)] dark:bg-[var(--primary-dark)] fixed top-0 z-[500] overflow-hidden '>
 				<div className='flex flex-col items-center justify-center text-center'>
 					<Image
 						src={logo}

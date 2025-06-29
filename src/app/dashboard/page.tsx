@@ -7,7 +7,11 @@ import IconCard from '@/components/IconCard';
 import SideNav from '@/components/SideNav';
 import AccountCard from '@/components/AccountCard';
 import HeaderNav from '@/components/HeaderNav';
-import { FaGamepad, FaMoneyBillTransfer } from 'react-icons/fa6';
+import {
+	FaGamepad,
+	FaMoneyBillTransfer,
+	FaScaleBalanced,
+} from 'react-icons/fa6';
 import { GiPayMoney, GiUpgrade } from 'react-icons/gi';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiWifiFill } from 'react-icons/ri';
@@ -18,6 +22,8 @@ import { MdLock } from 'react-icons/md';
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
 import Menuitems from '@/components/Menuitem';
+import CreateRoomModal from '@/components/CreateRoomModal';
+import NavBox from '@/components/NavBox';
 
 type UserProfile = {
 	first_name: string;
@@ -30,6 +36,7 @@ type UserProfile = {
 const Page = () => {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [showModal, setShowModal] = useState(false);
 	const [openMenu, setOpenMenu] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -97,12 +104,12 @@ const Page = () => {
 
 					{/* <div className='w-full  gap-4'> */}
 					{/* Left section */}
-					<div className=' md:ml-[210px]     gap-4'>
-						<div className='top flex items-stretch justify-between  flex-wrap'>
+					<div className=' md:ml-[210px] flex  '>
+						<div className='top flex items-start justify-around w-full'>
 							{/* Quick Transactions */}
-							<div className='px-[8px] mt-4 shadow-md pb-4 relative  flex-1 '>
+							<div className='px-[8px] mt-4 shadow-md pb-4 relative flex-1 w-full'>
 								<CardTitle
-									title='Quick Transactions'
+									title='Main Menu'
 									handleMenuClick={() =>
 										setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
 									}
@@ -122,149 +129,35 @@ const Page = () => {
 										]}
 									/>
 								)}
-								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
-									<IconCard
+								<div className='linkList mt-4 flex items-center md:justify-start justify-center md:gap-4 px-4 gap-2 w-full flex-wrap'>
+									{showModal && (
+										<CreateRoomModal onClose={() => setShowModal(false)} />
+									)}
+									<NavBox
 										IconName={FaMoneyBillTransfer}
 										boxText='Fund Transfer'
+										subtext='Send money to Friends'
 										url='/interbank'
 									/>
-
-									<IconCard
-										IconName={FaMoneyBillTransfer}
-										boxText='Bank Transfer'
-										url='#'
+									<NavBox
+										IconName={FaScaleBalanced}
+										boxText='Finance Management'
+										subtext='Track your finance'
+										url='/interbank'
 									/>
-									<IconCard
-										IconName={FaMoneyBillTransfer}
-										boxText='Bank Transfer'
-										url='#'
+									<NavBox
+										IconName={FaScaleBalanced}
+										boxText='Finance Management'
+										subtext='Track your finance'
+										url='/interbank'
 									/>
-								</div>
-							</div>
-
-							{/* Entertainment */}
-							<div className='px-[16px] flex-1 mt-4 shadow-md pb-4 relative '>
-								<CardTitle
-									title='Entertainment'
-									handleMenuClick={() =>
-										setOpenMenu((prev) =>
-											prev === 'profile' ? null : 'profile'
-										)
-									}
-									IconName={FaGamepad}
-								/>
-								{openMenu === 'profile' && (
-									<Menuitems
-										items={[
-											{
-												label: 'Menu 1',
-												onClick: () => setOpenMenu(null),
-											},
-											{
-												label: 'Menu 2',
-												onClick: () => setOpenMenu(null),
-											},
-										]}
-									/>
-								)}
-								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
-									<IconCard
-										IconName={FaRegEdit}
-										boxText='Host Room'
-										url='#'
-									/>
-									<IconCard
-										IconName={FaRegCreditCard}
-										boxText='Join A Room'
-										url='#'
-									/>
-									<IconCard
-										IconName={GiUpgrade}
-										boxText='View Games'
-										url='#'
-									/>
-									<IconCard
-										IconName={GiUpgrade}
-										boxText='View Past Games'
-										url='#'
-									/>
-									<IconCard
-										IconName={GiUpgrade}
-										boxText='Upgrade Account'
-										url='#'
-									/>
-									<IconCard
-										IconName={MdLock}
-										boxText='Reset Authentications'
-										url='#'
+									<NavBox
+										IconName={FaScaleBalanced}
+										boxText='Finance Management'
+										subtext='Track your finance'
+										url='/interbank'
 									/>
 								</div>
-							</div>
-						</div>
-						{/* Profile Management */}
-						<div className='px-[16px] mt-4 shadow-md pb-4 grow relative'>
-							<CardTitle
-								title='Profile Management'
-								handleMenuClick={() =>
-									setOpenMenu((prev) => (prev === 'profile' ? null : 'profile'))
-								}
-								IconName={FaUserCog}
-							/>
-							{openMenu === 'profile' && (
-								<Menuitems
-									items={[
-										{
-											label: 'Menu 1',
-											onClick: () => setOpenMenu(null),
-										},
-										{
-											label: 'Menu 2',
-											onClick: () => setOpenMenu(null),
-										},
-									]}
-								/>
-							)}
-							<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 gap-2 w-full flex-wrap'>
-								<IconCard
-									IconName={FaRegEdit}
-									boxText='Account Update'
-									url='#'
-								/>
-								<IconCard
-									IconName={FaRegCreditCard}
-									boxText='Request Debit Card'
-									url='#'
-								/>
-								<IconCard
-									IconName={GiUpgrade}
-									boxText='Upgrade Account'
-									url='#'
-								/>
-								<IconCard
-									IconName={GiUpgrade}
-									boxText='Upgrade Account'
-									url='#'
-								/>
-								<IconCard
-									IconName={GiUpgrade}
-									boxText='Upgrade Account'
-									url='#'
-								/>
-								<IconCard
-									IconName={MdLock}
-									boxText='Reset Authentications'
-									url='#'
-								/>
-								<IconCard
-									IconName={MdLock}
-									boxText='Reset Authentications'
-									url='#'
-								/>
-								<IconCard
-									IconName={MdLock}
-									boxText='Reset Authentications'
-									url='#'
-								/>
 							</div>
 						</div>
 					</div>
