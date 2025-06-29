@@ -141,21 +141,27 @@ const Page = () => {
 									/>
 									<NavBox
 										IconName={FaScaleBalanced}
-										boxText='Finance Management'
-										subtext='Track your finance'
-										url='/interbank'
+										boxText='Personal Budgets'
+										subtext='Track monthly budget'
+										url='#'
+									/>
+									<NavBox
+										IconName={FaScaleBalanced}
+										boxText='Personal Goals'
+										subtext='Track financial goals'
+										url='#'
+									/>
+									<NavBox
+										IconName={FaScaleBalanced}
+										boxText='Thrift (Ajo) Contribution'
+										subtext='Save with friends '
+										url='#'
 									/>
 									<NavBox
 										IconName={FaScaleBalanced}
 										boxText='Finance Management'
 										subtext='Track your finance'
-										url='/interbank'
-									/>
-									<NavBox
-										IconName={FaScaleBalanced}
-										boxText='Finance Management'
-										subtext='Track your finance'
-										url='/interbank'
+										url='#'
 									/>
 								</div>
 							</div>
