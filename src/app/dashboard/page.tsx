@@ -116,7 +116,7 @@ const Page = () => {
 										IconName={FaBullseye}
 										boxText='Personal Goals'
 										subtext='Track financial goals'
-										url='#'
+										url='/mygoals'
 									/>
 									<NavBox
 										IconName={FaHandHoldingDollar}

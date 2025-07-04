@@ -3,7 +3,7 @@ import GoalProgress from './GoalProgress';
 
 const ProgessCard = () => {
 	return (
-		<div className='bg-white dark:bg-[var(--card-bg-dark)] mb-4 shadow-md rounded-lg p-6 w-[300px] max-w-md mx-auto'>
+		<div className='bg-white dark:bg-[var(--card-bg-dark)] mb-4 shadow-md rounded-lg p-6 w-[250px] max-w-sm mx-auto'>
 			<GoalProgress
 				current={890000}
 				target={5000000}
