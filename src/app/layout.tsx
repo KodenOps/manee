@@ -1,7 +1,6 @@
 // app/layout.tsx
 import '@/app/globals.css';
 import { ThemeProvider } from '../../theme-provider';
-import InviteWatcher from '@/components/InviteWatcher';
 import { UserProvider } from '@/components/UserContext'; // 👈 import the context
 
 export const metadata = {
@@ -25,10 +24,7 @@ export default function RootLayout({
 					defaultTheme='system'>
 					<UserProvider>
 						{' '}
-						<div className='relative'>
-							<InviteWatcher />
-							{children}
-						</div>
+						<div className='relative'>{children}</div>
 					</UserProvider>
 				</ThemeProvider>
 			</body>

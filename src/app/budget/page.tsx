@@ -36,7 +36,7 @@ const page = () => {
 			<SideNav />
 			<HeaderNav userprofile={userProfile} />
 			<div className='mainbody md:ml-[210px] '>
-				<div className='accountCards shadow-md  md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
+				<div className='accountCards shadow-md  md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto md:mt-0 mt-[80px]'>
 					<AccountCard
 						// key={idx}
 						accountBal={userProfile.balance}

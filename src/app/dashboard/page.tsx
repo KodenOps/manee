@@ -16,7 +16,6 @@ import {
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
 import Menuitems from '@/components/Menuitem';
-import CreateRoomModal from '@/components/CreateRoomModal';
 import NavBox from '@/components/NavBox';
 import { AiOutlinePieChart } from 'react-icons/ai';
 import { useUser } from '@/components/UserContext';
@@ -55,7 +54,7 @@ const Page = () => {
 				<div className='w-full'>
 					<HeaderNav userprofile={userProfile} />
 
-					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto md:mt-0 mt-[100px]'>
+					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto md:mt-0 mt-[80px]'>
 						{/* {[...Array(2)].map((_, idx) => ( */}
 						<AccountCard
 							// key={idx}
@@ -101,9 +100,6 @@ const Page = () => {
 									/>
 								)}
 								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 px-4 gap-2 w-full flex-wrap'>
-									{showModal && (
-										<CreateRoomModal onClose={() => setShowModal(false)} />
-									)}
 									<NavBox
 										IconName={FaMoneyBillTransfer}
 										boxText='Fund Transfer'
