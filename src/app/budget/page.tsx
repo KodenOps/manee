@@ -9,6 +9,8 @@ import { LuLayoutGrid } from 'react-icons/lu';
 import Menuitems from '@/components/Menuitem';
 import CardTitle from '@/components/CardTitle';
 import { useUser } from '@/components/UserContext';
+import GoalProgress from '@/components/GoalProgress';
+import ProgessCard from '@/components/ProgessCard';
 type UserProfile = {
 	first_name: string;
 	last_name: string;
@@ -77,8 +79,11 @@ const page = () => {
 						)}
 					</div>
 				</div>
-				<div className='maincharts px-8'>
-					<h3>Hello</h3>
+				<div className='maincharts px-8 flex flex-wrap w-full items-center justify-between mt-4'>
+					<ProgessCard />
+					<ProgessCard />
+					<ProgessCard />
+					<ProgessCard />
 				</div>
 			</div>
 		</div>
