@@ -3,35 +3,23 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ThemeProvider } from 'next-themes';
 import CardTitle from '@/components/CardTitle';
 import { LuLayoutGrid } from 'react-icons/lu';
-import IconCard from '@/components/IconCard';
 import SideNav from '@/components/SideNav';
 import AccountCard from '@/components/AccountCard';
 import HeaderNav from '@/components/HeaderNav';
 import {
 	FaBullseye,
-	FaGamepad,
 	FaHandHoldingDollar,
 	FaMoneyBillTransfer,
 	FaScaleBalanced,
 } from 'react-icons/fa6';
-import { GiPayMoney, GiUpgrade } from 'react-icons/gi';
-import { FiPhoneCall } from 'react-icons/fi';
-import { RiWifiFill } from 'react-icons/ri';
-import { TbMoneybag } from 'react-icons/tb';
-import History from '@/components/History';
-import {
-	FaUserCog,
-	FaRegEdit,
-	FaRegCreditCard,
-	FaHandHoldingUsd,
-} from 'react-icons/fa';
-import { MdLock } from 'react-icons/md';
+
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
 import Menuitems from '@/components/Menuitem';
 import CreateRoomModal from '@/components/CreateRoomModal';
 import NavBox from '@/components/NavBox';
 import { AiOutlinePieChart } from 'react-icons/ai';
+import { useUser } from '@/components/UserContext';
 
 type UserProfile = {
 	first_name: string;
@@ -42,40 +30,9 @@ type UserProfile = {
 };
 
 const Page = () => {
-	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-	const [loading, setLoading] = useState(true);
+	const { userProfile, loading } = useUser();
 	const [showModal, setShowModal] = useState(false);
 	const [openMenu, setOpenMenu] = useState<string | null>(null);
-
-	useEffect(() => {
-		const fetchProfile = async () => {
-			try {
-				const userResponse = await supabase.auth.getUser();
-				const user = userResponse.data.user;
-
-				if (user) {
-					const { data: profile, error } = await supabase
-						.from('profiles')
-						.select('first_name, last_name, account_number, balance')
-						.eq('id', user.id)
-						.single();
-
-					if (!error && profile) {
-						setUserProfile({
-							...profile,
-							email: user.email || '',
-						});
-					}
-				}
-			} catch (error) {
-				console.error('Unexpected error fetching profile:', error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchProfile();
-	}, []);
 
 	if (loading || !userProfile) {
 		return (
@@ -98,7 +55,7 @@ const Page = () => {
 				<div className='w-full'>
 					<HeaderNav userprofile={userProfile} />
 
-					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
+					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto md:mt-0 mt-[100px]'>
 						{/* {[...Array(2)].map((_, idx) => ( */}
 						<AccountCard
 							// key={idx}
@@ -123,7 +80,7 @@ const Page = () => {
 							{/* Quick Transactions */}
 							<div className='px-[8px] mt-4 shadow-md pb-4 relative flex-1 w-full'>
 								<CardTitle
-									title='Main Menu'
+									title='What Are We doing today?'
 									handleMenuClick={() =>
 										setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
 									}
@@ -157,7 +114,7 @@ const Page = () => {
 										IconName={AiOutlinePieChart}
 										boxText='Personal Budgets'
 										subtext='Track monthly budget'
-										url='#'
+										url='/budget'
 									/>
 									<NavBox
 										IconName={FaBullseye}

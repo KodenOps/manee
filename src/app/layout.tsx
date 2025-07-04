@@ -2,6 +2,7 @@
 import '@/app/globals.css';
 import { ThemeProvider } from '../../theme-provider';
 import InviteWatcher from '@/components/InviteWatcher';
+import { UserProvider } from '@/components/UserContext'; // 👈 import the context
 
 export const metadata = {
 	title: 'Manee',
@@ -22,11 +23,13 @@ export default function RootLayout({
 				<ThemeProvider
 					attribute='class'
 					defaultTheme='system'>
-					{/* 👇 Client-only wrapper */}
-					<div className='relative'>
-						<InviteWatcher />
-						{children}
-					</div>
+					<UserProvider>
+						{' '}
+						<div className='relative'>
+							<InviteWatcher />
+							{children}
+						</div>
+					</UserProvider>
 				</ThemeProvider>
 			</body>
 		</html>

@@ -57,7 +57,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 	}
 
 	return (
-		<div className='flex md:justify-end justify-between w-full gap-16 md:px-[40px] pr-[16px] py-[24px] shadow-md bg-[var(--whites)] dark:bg-[var(--primary-dark)] sticky top-0 z-[50]'>
+		<div className='flex md:justify-end justify-between w-full gap-16 md:px-[40px] pr-[16px] py-[24px] shadow-md bg-[var(--whites)] dark:bg-[var(--primary-dark)]   z-[50] md:sticky fixed  top-0 items-center md:h-auto h-[100px]'>
 			<div className='search md:flex items-center justify-center border-[var(--primary)] dark:border-[var(--inputborder)] rounded-[5px] border-2 gap-2 px-4 hidden '>
 				<p className='text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
 					<MdSearch size={24} />
@@ -106,7 +106,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ userprofile }) => {
 				<Logo />
 			</div>
 			<div
-				className='md:hidden text-[var(--primary)] fixed right-6 top-8 dark:text-[var(--secondary-dark)] z-20'
+				className='md:hidden text-[var(--primary)]  right-6 top-8 dark:text-[var(--secondary-dark)] z-20'
 				onClick={() => setmenuUp(!menuUp)}>
 				{menuUp ? (
 					<IoMenu size={32} />
