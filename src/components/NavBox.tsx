@@ -23,7 +23,7 @@ const NavBox = ({
 				<IconName size={40} />
 			</p>
 			<div className='md:w-[90%] w-full'>
-				<p className='font-medium text-[var(--text)] dark:text-[var(--whites-dark)] w-full px-0  md:text-[24px] text-[20px]'>
+				<p className='font-medium text-[var(--text)] dark:text-[var(--whites-dark)] w-[90%] px-0  md:text-[24px] text-[18px]'>
 					{boxText}
 				</p>
 				<p className=' text-[var(--text)] dark:text-[var(--whites-dark)] w-full  md:text-[14px] text-[10px] '>
