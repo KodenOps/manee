@@ -1,0 +1,146 @@
+import { BiHome } from 'react-icons/bi';
+import { FiMoreHorizontal } from 'react-icons/fi';
+import {
+	LuBus,
+	LuUtensils,
+	LuChrome,
+	LuPlug,
+	LuHeartPulse,
+	LuUser,
+	LuBookOpen,
+	LuTv,
+	LuPiggyBank,
+	LuGift,
+	LuMoveHorizontal,
+} from 'react-icons/lu';
+
+export const expenseCategories = [
+	{
+		category: 'Transportation',
+		icon: LuBus,
+		subcategories: [
+			'Bus Fare',
+			'Fueling',
+			'Taxi/Ride Hailing',
+			'Vehicle Maintenance',
+			'Public Transport Pass',
+			'Car Loan/Lease',
+			'Parking Fees',
+			'Toll Fees',
+		],
+	},
+	{
+		category: 'Feeding',
+		icon: LuUtensils,
+		subcategories: [
+			'Groceries',
+			'Foodstuff',
+			'Snacks',
+			'Street Food',
+			'Fast Food',
+			'Fine Dining',
+			'Meal Prep',
+			'Office Lunch',
+		],
+	},
+	{
+		category: 'Housing',
+		icon: BiHome,
+		subcategories: [
+			'Rent',
+			'Mortgage',
+			'Repairs & Maintenance',
+			'Furnishings',
+			'Home Insurance',
+			'Security',
+		],
+	},
+	{
+		category: 'Utilities',
+		icon: LuPlug,
+		subcategories: [
+			'Electricity',
+			'Water',
+			'Waste Disposal',
+			'Gas',
+			'Cable TV',
+			'Internet',
+			'Mobile Recharge',
+		],
+	},
+	{
+		category: 'Health',
+		icon: LuHeartPulse,
+		subcategories: [
+			'Hospital Bills',
+			'Drugs/Medications',
+			'Health Insurance',
+			'Dental Care',
+			'Eye Care',
+			'Therapy',
+			'Fitness/Gym',
+		],
+	},
+	{
+		category: 'Personal Care',
+		icon: LuUser,
+		subcategories: [
+			'Haircut/Salon',
+			'Skincare',
+			'Cosmetics',
+			'Clothing',
+			'Laundry',
+			'Toiletries',
+		],
+	},
+	{
+		category: 'Education',
+		icon: LuBookOpen,
+		subcategories: [
+			'School Fees',
+			'Books & Materials',
+			'Online Courses',
+			'Tutoring',
+			'Stationery',
+		],
+	},
+	{
+		category: 'Entertainment',
+		icon: LuTv,
+		subcategories: [
+			'Netflix/Streaming',
+			'Cinema',
+			'Concerts/Events',
+			'Video Games',
+			'Nightlife',
+			'Subscriptions',
+		],
+	},
+	{
+		category: 'Savings & Investment',
+		icon: LuPiggyBank,
+		subcategories: [
+			'Emergency Fund',
+			'Stocks & Crypto',
+			'Fixed Deposits',
+			'Pension',
+			'Insurance Savings',
+		],
+	},
+	{
+		category: 'Donations & Gifting',
+		icon: LuGift,
+		subcategories: [
+			'Religious Offerings',
+			'Charity',
+			'Gifts',
+			'Remittance to Family',
+			'Tips',
+		],
+	},
+	{
+		category: 'Others',
+		icon: FiMoreHorizontal,
+		subcategories: ['Unplanned Expenses', 'Loan Repayment', 'Miscellaneous'],
+	},
+];

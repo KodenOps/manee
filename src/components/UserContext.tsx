@@ -15,23 +15,29 @@ export type UserProfile = {
 	account_number: string;
 	balance: number;
 	email: string;
+	income: number;
 };
 
 interface UserContextType {
 	userProfile: UserProfile | null;
 	loading: boolean;
 	refetchUser: () => void;
+	triggerSummaryRefresh: () => void;
+	summaryRefreshSignal: number;
 }
 
 const UserContext = createContext<UserContextType>({
 	userProfile: null,
 	loading: true,
 	refetchUser: () => {},
+	triggerSummaryRefresh: () => {},
+	summaryRefreshSignal: 0,
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [summaryRefreshSignal, setSummaryRefreshSignal] = useState(0);
 
 	const fetchProfile = async () => {
 		setLoading(true);
@@ -42,7 +48,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 			if (user) {
 				const { data: profile, error } = await supabase
 					.from('profiles')
-					.select('first_name, last_name, account_number, balance')
+					.select('first_name, last_name, account_number, balance, income')
 					.eq('id', user.id)
 					.single();
 
@@ -51,6 +57,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 						...profile,
 						email: user.email || '',
 						id: user.id,
+						income: profile.income,
 					});
 				}
 			}
@@ -61,13 +68,23 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
+	const triggerSummaryRefresh = () => {
+		setSummaryRefreshSignal((prev) => prev + 1);
+	};
+
 	useEffect(() => {
 		fetchProfile();
 	}, []);
 
 	return (
 		<UserContext.Provider
-			value={{ userProfile, loading, refetchUser: fetchProfile }}>
+			value={{
+				userProfile,
+				loading,
+				refetchUser: fetchProfile,
+				triggerSummaryRefresh,
+				summaryRefreshSignal,
+			}}>
 			{children}
 		</UserContext.Provider>
 	);

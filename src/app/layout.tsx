@@ -3,6 +3,7 @@ import '@/app/globals.css';
 import { ThemeProvider } from '../../theme-provider';
 import { UserProvider } from '@/components/UserContext';
 import { GoalsProvider } from '@/components/GoalsContext'; // 👈 import your new context
+import { BudgetProvider } from '@/components/BudgetContext';
 
 export const metadata = {
 	title: 'Manee',
@@ -25,7 +26,9 @@ export default function RootLayout({
 					defaultTheme='system'>
 					<UserProvider>
 						<GoalsProvider>
-							<div className='relative'>{children}</div>
+							<BudgetProvider>
+								<div className='relative'>{children}</div>
+							</BudgetProvider>
 						</GoalsProvider>
 					</UserProvider>
 				</ThemeProvider>
