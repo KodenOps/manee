@@ -5,42 +5,41 @@ import { LuLayoutGrid } from 'react-icons/lu';
 
 import HeaderNav from '@/components/HeaderNav';
 import SideNav from '@/components/SideNav';
-import AccountCard from '@/components/AccountCard';
 import Menuitems from '@/components/Menuitem';
 import CardTitle from '@/components/CardTitle';
 import BudgetSummary from '@/components/BudgetSummary';
 import SetBudgetModal from '@/components/SetBudgetModal';
 import { useUser } from '@/components/UserContext';
 import BudgetGauge from '@/components/BudgetGuage';
-import CardTitleWithAction from '@/components/CardTitleWithAction';
 import WithAuthentication from '@/components/WithAuthentication';
+import CategoryPieChart from '@/components/CategoryPieChart';
+import IncomeTrendLineChart from '@/components/IncomeTrendLineChart';
 
 const Page = () => {
 	const { userProfile, loading } = useUser();
 
 	const [openMenu, setOpenMenu] = useState<string | null>(null);
 	const [showModal, setShowModal] = useState(false);
-	const [refreshKey, setRefreshKey] = useState(0);
 
-	// Refs for detecting clicks outside each menu
-	const quickMenuRef = useRef<HTMLDivElement | null>(null);
-	const budgetMenuRef = useRef<HTMLDivElement | null>(null);
+	// Refs for each menu
+	const financeMenuRef = useRef<HTMLDivElement | null>(null);
+	const expenseMenuRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			const target = event.target as Node;
-			if (
-				openMenu &&
-				!quickMenuRef.current?.contains(target) &&
-				!budgetMenuRef.current?.contains(target)
+
+			if (openMenu === 'finance' && !financeMenuRef.current?.contains(target)) {
+				setOpenMenu(null);
+			} else if (
+				openMenu === 'expenses' &&
+				!expenseMenuRef.current?.contains(target)
 			) {
 				setOpenMenu(null);
 			}
 		};
 
-		if (openMenu) {
-			document.addEventListener('mousedown', handleClickOutside);
-		}
+		document.addEventListener('mousedown', handleClickOutside);
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
@@ -69,18 +68,19 @@ const Page = () => {
 					<CardTitle
 						title='Finance Summary'
 						handleMenuClick={() =>
-							setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
+							setOpenMenu((prev) => (prev === 'finance' ? null : 'finance'))
 						}
 						IconName={LuLayoutGrid}
+						menuRef={financeMenuRef}
 					/>
-					{openMenu === 'quick' && (
+					{openMenu === 'finance' && (
 						<div
-							ref={quickMenuRef}
+							ref={financeMenuRef}
 							className='absolute right-4 top-12 z-50'>
 							<Menuitems
 								items={[
-									{ label: 'Menu 1', onClick: () => setOpenMenu(null) },
-									{ label: 'Menu 2', onClick: () => setOpenMenu(null) },
+									{ label: 'Refresh', onClick: () => setOpenMenu(null) },
+									{ label: 'Export Summary', onClick: () => setOpenMenu(null) },
 								]}
 							/>
 						</div>
@@ -92,54 +92,45 @@ const Page = () => {
 					<BudgetSummary />
 				</div>
 
-				{/* Budgets Header and Menu */}
-				<div className='flex mt-6 px-4'>
-					<div className='top flex items-start justify-between w-full relative'>
-						<CardTitleWithAction
-							title='My Budgets'
-							IconName={LuLayoutGrid}
-							onActionClick={() => setShowModal(true)}
-						/>
-
-						{openMenu === 'budget' && (
-							<div
-								ref={budgetMenuRef}
-								className='absolute right-0 top-12 z-50'>
-								<Menuitems
-									items={[
-										{
-											label: 'Set New Budget',
-											onClick: () => {
-												setOpenMenu(null);
-												setShowModal(true);
-											},
-										},
-										{
-											label: 'Another Action',
-											onClick: () => setOpenMenu(null),
-										},
-									]}
-								/>
-							</div>
-						)}
+				{/* Expenses Overview Section */}
+				<div className='top flex items-start justify-between w-full mt-10 px-4 relative'>
+					<CardTitle
+						title='Expenses Overview'
+						handleMenuClick={() =>
+							setOpenMenu((prev) => (prev === 'expenses' ? null : 'expenses'))
+						}
+						IconName={LuLayoutGrid}
+						menuRef={expenseMenuRef}
+					/>
+					{openMenu === 'expenses' && (
+						<div
+							ref={expenseMenuRef}
+							className='absolute right-4 top-12 z-50'>
+							<Menuitems
+								items={[
+									{
+										label: 'View All Expenses',
+										onClick: () => setOpenMenu(null),
+									},
+									{ label: 'Export to CSV', onClick: () => setOpenMenu(null) },
+								]}
+							/>
+						</div>
+					)}
+				</div>
+				{/* dashboards */}
+				<div className='p-4 flex flex-wrap md:flex-nowrap items-start justify-start gap-4'>
+					<div className='md:w-[400px] w-full mb-4'>
+						<div className='h-[400px]'>
+							<CategoryPieChart />
+						</div>
+					</div>
+					<div className='md:w-[400px] w-full mb-4'>
+						<div className='h-[400px]'>
+							<IncomeTrendLineChart />
+						</div>
 					</div>
 				</div>
-
-				{/* Budget List */}
-				<div className='maincharts px-4 md:px-8 flex flex-wrap w-full justify-start mt-4'>
-					<BudgetGauge />
-				</div>
-
-				{/* Modal */}
-				{showModal && (
-					<SetBudgetModal
-						onClose={() => setShowModal(false)}
-						onBudgetSaved={() => {
-							setShowModal(false);
-							setRefreshKey((prev) => prev + 1); // re-render list
-						}}
-					/>
-				)}
 			</div>
 		</div>
 	);

@@ -23,7 +23,7 @@ const ProgessCard = ({
 }: ProgessCardProps) => {
 	return (
 		<div
-			className='bg-white dark:bg-[var(--card-bg-dark)] mb-4 shadow-md rounded-lg p-6 w-[250px] max-w-sm mx-auto cursor-pointer hover:shadow-lg transition'
+			className='bg-white dark:bg-[var(--card-bg-dark)] mb-4 shadow-md rounded-lg p-6 w-[250px] cursor-pointer hover:shadow-lg transition'
 			onClick={onClick}>
 			<GoalProgress
 				current={current}

@@ -10,6 +10,8 @@ import { TbMoneybag } from 'react-icons/tb';
 import supabase from '@/helper/supabaseClient'; // Adjust the import path as necessary
 import { useRouter } from 'next/navigation';
 import { MdLogout } from 'react-icons/md';
+import { BsBank } from 'react-icons/bs';
+import { GoTelescope } from 'react-icons/go';
 
 const SideBtns = () => {
 	const router = useRouter();
@@ -24,7 +26,7 @@ const SideBtns = () => {
 					url='/dashboard'
 				/>
 				<h4 className='px-[24px] font-medium text-sm mt-8 mb-4 tracking-wider text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-					TRANSACTIONS
+					MY FINANCE
 				</h4>
 				<NavBtn
 					text='Transfers'
@@ -32,30 +34,35 @@ const SideBtns = () => {
 					url='/interbank'
 				/>
 				<NavBtn
-					text='Pay Bills'
+					text='My Goals'
 					IconText={GiPayMoney}
-					url='/pay-bills'
+					url='/mygoals'
 				/>
 				<NavBtn
-					text='Airtime Purchase'
+					text='My Budgets'
 					IconText={FiPhoneCall}
-					url='/airtime'
+					url='/budget'
 				/>
 				<NavBtn
-					text='Data Purchase'
-					IconText={RiWifiFill}
-					url='/data'
+					text='My Loans'
+					IconText={BsBank}
+					url='/my-loans'
 				/>
 				<NavBtn
-					text='Quick Loans'
-					IconText={TbMoneybag}
-					url='/loans'
+					text='My Expenses'
+					IconText={BsBank}
+					url='/my-expenses'
+				/>
+				<NavBtn
+					text='Finance Overview'
+					IconText={GoTelescope}
+					url='/overview'
 				/>
 			</div>
 			{/* SECOND LINK BOX */}
 			<div className='topLinks mt-[32px]'>
 				<h4 className='px-[24px] font-medium text-sm mt-4 mb-4 tracking-wider text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
-					ACCOUNT
+					SETTINGS
 				</h4>
 				<NavBtn
 					text='Account Update'

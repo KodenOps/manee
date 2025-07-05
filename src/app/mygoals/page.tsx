@@ -12,6 +12,8 @@ import { useUser } from '@/components/UserContext';
 import ProgessCard from '@/components/ProgessCard';
 import { useGoals } from '@/components/GoalsContext';
 import type { Goal } from '@/components/GoalsContext';
+import WithAuthentication from '@/components/WithAuthentication';
+import CardTitleWithAction from '@/components/CardTitleWithAction';
 
 const Page = () => {
 	const { userProfile, loading } = useUser();
@@ -111,14 +113,13 @@ const Page = () => {
 					/>
 				</div>
 
-				<div className='flex mt-4'>
+				<div className='flex mt-4 justify-start '>
 					<div className='top flex items-start justify-around w-full relative'>
-						<CardTitle
+						<CardTitleWithAction
 							title='My Goals'
-							handleMenuClick={() =>
-								setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
-							}
+							texts='Create New Goal'
 							IconName={LuLayoutGrid}
+							onActionClick={() => setShowModal(true)}
 						/>
 
 						{openMenu === 'quick' && (
@@ -141,7 +142,7 @@ const Page = () => {
 				</div>
 
 				{/* GOALS GRID */}
-				<div className='maincharts px-8 flex flex-wrap w-full items-center justify-start mt-4 gap-4'>
+				<div className='maincharts px-8 flex flex-wrap items-start justify-start  w-full mt-4 gap-4'>
 					{goals.length === 0 ? (
 						<div className='w-full text-center text-gray-500 dark:text-gray-400 py-16'>
 							<p className='text-lg font-semibold'>No goals yet</p>
@@ -389,4 +390,4 @@ const Page = () => {
 	);
 };
 
-export default Page;
+export default WithAuthentication(Page);
