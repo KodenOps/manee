@@ -19,6 +19,7 @@ import Menuitems from '@/components/Menuitem';
 import NavBox from '@/components/NavBox';
 import { AiOutlinePieChart } from 'react-icons/ai';
 import { useUser } from '@/components/UserContext';
+import { BsBank } from 'react-icons/bs';
 
 type UserProfile = {
 	first_name: string;
@@ -119,6 +120,12 @@ const Page = () => {
 										url='/mygoals'
 									/>
 									<NavBox
+										IconName={BsBank}
+										boxText='Loan Management'
+										subtext='Track your Debts'
+										url='#'
+									/>
+									<NavBox
 										IconName={FaHandHoldingDollar}
 										boxText='Thrift (Ajo) Contribution'
 										subtext='Save with friends '
@@ -126,13 +133,7 @@ const Page = () => {
 									/>
 									<NavBox
 										IconName={FaScaleBalanced}
-										boxText='Finance Management'
-										subtext='Track your finance'
-										url='#'
-									/>
-									<NavBox
-										IconName={FaScaleBalanced}
-										boxText='Finance Management'
+										boxText='Finance Overview'
 										subtext='Track your finance'
 										url='#'
 									/>
