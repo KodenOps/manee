@@ -116,7 +116,7 @@ const CategoryPieChart = () => {
 		<div className='w-full max-w-3xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow h-full'>
 			<div className='flex justify-between items-center mb-4'>
 				<h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
-					Spending by Category
+					Expense Categories
 				</h2>
 				<select
 					value={range}
@@ -141,7 +141,7 @@ const CategoryPieChart = () => {
 					width='100%'
 					height={300}>
 					<PieChart
-						margin={{ top: 20, right: 40, bottom: 20, left: 40 }} // Add more margin
+						margin={{ top: 10, right: 10, bottom: 10, left: 10 }} // Add more margin
 					>
 						<Pie
 							dataKey='value'
@@ -163,7 +163,7 @@ const CategoryPieChart = () => {
 							cursor={false}
 							wrapperStyle={{
 								...(isMobile && {
-									left: '50%',
+									left: '10%',
 									transform: 'translateX(-50%)',
 								}),
 							}}
