@@ -22,7 +22,23 @@
 	--reds: #ff7657;
 	--darkred: #f74932ee;
 	--disabled: #cfcfcf;
+
+	/* progress css */
+	--red: #ef4444;
+	--orange: #f97316;
+	--yellow: #eab308;
+	--green: #22c55e;
+	--trail: #e5e7eb;
 }
+
+.dark {
+	--red: #f87171;
+	--orange: #fb923c;
+	--yellow: #facc15;
+	--green: #4ade80;
+	--trail: #1f2937;
+}
+
 .whitespace-pre-line {
 	white-space: pre-line;
 }

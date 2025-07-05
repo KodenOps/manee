@@ -9,6 +9,7 @@ import {
 import supabase from '@/helper/supabaseClient';
 
 export type UserProfile = {
+	id: string;
 	first_name: string;
 	last_name: string;
 	account_number: string;
@@ -49,6 +50,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 					setUserProfile({
 						...profile,
 						email: user.email || '',
+						id: user.id,
 					});
 				}
 			}

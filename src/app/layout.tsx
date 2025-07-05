@@ -1,7 +1,8 @@
 // app/layout.tsx
 import '@/app/globals.css';
 import { ThemeProvider } from '../../theme-provider';
-import { UserProvider } from '@/components/UserContext'; // 👈 import the context
+import { UserProvider } from '@/components/UserContext';
+import { GoalsProvider } from '@/components/GoalsContext'; // 👈 import your new context
 
 export const metadata = {
 	title: 'Manee',
@@ -23,8 +24,9 @@ export default function RootLayout({
 					attribute='class'
 					defaultTheme='system'>
 					<UserProvider>
-						{' '}
-						<div className='relative'>{children}</div>
+						<GoalsProvider>
+							<div className='relative'>{children}</div>
+						</GoalsProvider>
 					</UserProvider>
 				</ThemeProvider>
 			</body>
