@@ -29,9 +29,9 @@ const CardTitleWithAction = ({
 
 			{/* Action Button (Add Icon) */}
 			<div
-				className='flex items-center gap-2 justify-end p-4 rounded-md bg-[var(--primary)] dark:bg-[var(--secondary-dark)] dark:text-black text-white cursor-pointer'
+				className='flex items-center gap-2 justify-end md:p-4 p-2 rounded-md bg-[var(--primary)] dark:bg-[var(--secondary-dark)] dark:text-black text-white cursor-pointer'
 				onClick={onActionClick}>
-				{texts}
+				<span className='md:block hidden'>{texts}</span>
 				<button className=' dark:text-[var(--trail)] text-[var(--primary-dark)] hover:text-blue-800 dark:hover:text-blue-300 transition'>
 					<IoMdAddCircleOutline size={24} />
 				</button>
