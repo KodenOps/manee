@@ -1,10 +1,10 @@
 'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 import { ThemeProvider } from 'next-themes';
 import CardTitle from '@/components/CardTitle';
 import { LuLayoutGrid } from 'react-icons/lu';
 import SideNav from '@/components/SideNav';
-import AccountCard from '@/components/AccountCard';
 import HeaderNav from '@/components/HeaderNav';
 import {
 	FaBullseye,
@@ -12,7 +12,6 @@ import {
 	FaMoneyBillTransfer,
 	FaScaleBalanced,
 } from 'react-icons/fa6';
-
 import WithAuthentication from '@/components/WithAuthentication';
 import supabase from '@/helper/supabaseClient';
 import Menuitems from '@/components/Menuitem';
@@ -20,19 +19,65 @@ import NavBox from '@/components/NavBox';
 import { AiOutlinePieChart } from 'react-icons/ai';
 import { useUser } from '@/components/UserContext';
 import { BsBank } from 'react-icons/bs';
-
-type UserProfile = {
-	first_name: string;
-	last_name: string;
-	account_number: string;
-	balance: number;
-	email: string;
-};
+import BudgetSummary from '@/components/BudgetSummary';
 
 const Page = () => {
 	const { userProfile, loading } = useUser();
-	const [showModal, setShowModal] = useState(false);
-	const [openMenu, setOpenMenu] = useState<string | null>(null);
+	const [isTopMenuOpen, setIsTopMenuOpen] = useState(false);
+	const [isCardMenuOpen, setIsCardMenuOpen] = useState(false);
+	const [selectedBucketId, setSelectedBucketId] = useState<string | null>(null);
+
+	const topMenuRef = useRef<HTMLDivElement>(null);
+	const cardMenuRef = useRef<HTMLDivElement>(null);
+
+	// Close menus on outside click
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (
+				isTopMenuOpen &&
+				topMenuRef.current &&
+				!topMenuRef.current.contains(e.target as Node)
+			) {
+				setIsTopMenuOpen(false);
+			}
+			if (
+				isCardMenuOpen &&
+				cardMenuRef.current &&
+				!cardMenuRef.current.contains(e.target as Node)
+			) {
+				setIsCardMenuOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isTopMenuOpen, isCardMenuOpen]);
+
+	// Get current budget bucket
+	useEffect(() => {
+		const fetchCurrentBucket = async () => {
+			if (!userProfile?.id) return;
+
+			const { data, error } = await supabase
+				.from('budget_buckets')
+				.select('*')
+				.eq('user_id', userProfile.id)
+				.eq('status', 'open')
+				.order('start_date', { ascending: false })
+				.limit(1)
+				.single();
+
+			if (data) {
+				setSelectedBucketId(data.id);
+			} else {
+				console.warn('No open budget bucket found or error:', error);
+			}
+		};
+
+		fetchCurrentBucket();
+	}, [userProfile?.id]);
 
 	if (loading || !userProfile) {
 		return (
@@ -55,51 +100,66 @@ const Page = () => {
 				<div className='w-full'>
 					<HeaderNav userprofile={userProfile} />
 
-					<div className='accountCards shadow-md md:ml-[210px] md:px-[24px] px-[8px] ml-0 gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto md:mt-0 mt-[80px]'>
-						{/* {[...Array(2)].map((_, idx) => ( */}
-						<AccountCard
-							// key={idx}
-							accountBal={userProfile.balance}
-							accountNum={userProfile.account_number}
-							accountType='Income'
-							accountName={`${userProfile.first_name} ${userProfile.last_name}`}
+					{/* Top Menu */}
+					<div className='md:ml-[210px] pt-8 px-4 relative md:my-0 mt-[60px]'>
+						<CardTitle
+							title='Main Menu'
+							handleMenuClick={() => setIsTopMenuOpen((prev) => !prev)}
+							IconName={LuLayoutGrid}
 						/>
-						<AccountCard
-							// key={idx}
-							accountBal={userProfile.balance}
-							accountNum={userProfile.account_number}
-							accountType='Savings'
-							accountName={`${userProfile.first_name} ${userProfile.last_name}`}
-						/>
+						{isTopMenuOpen && (
+							<div
+								ref={topMenuRef}
+								className='absolute z-50 mt-2 right-4'>
+								<Menuitems
+									items={[
+										{
+											label: 'Top Menu 1',
+											onClick: () => setIsTopMenuOpen(false),
+										},
+										{
+											label: 'Top Menu 2',
+											onClick: () => setIsTopMenuOpen(false),
+										},
+									]}
+								/>
+							</div>
+						)}
 					</div>
 
-					{/* <div className='w-full  gap-4'> */}
-					{/* Left section */}
-					<div className=' md:ml-[210px] flex  '>
+					{/* Budget Summary */}
+					<div className='md:ml-[210px] accountCards shadow-md md:px-[24px] px-[8px] gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
+						{selectedBucketId && <BudgetSummary bucketId={selectedBucketId} />}
+					</div>
+
+					{/* Card Menu */}
+					<div className='md:ml-[210px] flex'>
 						<div className='top flex items-start justify-around w-full'>
-							{/* Quick Transactions */}
 							<div className='px-[8px] mt-4 shadow-md pb-4 relative flex-1 w-full'>
 								<CardTitle
 									title='What Are We doing today?'
-									handleMenuClick={() =>
-										setOpenMenu((prev) => (prev === 'quick' ? null : 'quick'))
-									}
+									handleMenuClick={() => setIsCardMenuOpen((prev) => !prev)}
 									IconName={LuLayoutGrid}
 								/>
-								{openMenu === 'quick' && (
-									<Menuitems
-										items={[
-											{
-												label: 'Menu 1',
-												onClick: () => setOpenMenu(null),
-											},
-											{
-												label: 'Menu 2',
-												onClick: () => setOpenMenu(null),
-											},
-										]}
-									/>
+								{isCardMenuOpen && (
+									<div
+										ref={cardMenuRef}
+										className='absolute z-50 mt-2 right-4'>
+										<Menuitems
+											items={[
+												{
+													label: 'Quick Action 1',
+													onClick: () => setIsCardMenuOpen(false),
+												},
+												{
+													label: 'Quick Action 2',
+													onClick: () => setIsCardMenuOpen(false),
+												},
+											]}
+										/>
+									</div>
 								)}
+
 								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 px-4 gap-2 w-full flex-wrap'>
 									<NavBox
 										IconName={FaMoneyBillTransfer}
@@ -128,7 +188,7 @@ const Page = () => {
 									<NavBox
 										IconName={FaHandHoldingDollar}
 										boxText='Thrift (Ajo) Contribution'
-										subtext='Save with friends '
+										subtext='Save with friends'
 										url='#'
 									/>
 									<NavBox
@@ -141,7 +201,6 @@ const Page = () => {
 							</div>
 						</div>
 					</div>
-					{/* </div> */}
 				</div>
 			</div>
 		</ThemeProvider>

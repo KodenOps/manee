@@ -7,14 +7,11 @@ interface MenuItem {
 
 interface MenuitemsProps {
 	items: MenuItem[];
-	dropdownRef?: React.RefObject<HTMLDivElement>;
 }
 
-const Menuitems: React.FC<MenuitemsProps> = ({ items, dropdownRef }) => {
+const Menuitems: React.FC<MenuitemsProps> = ({ items }) => {
 	return (
-		<div
-			ref={dropdownRef}
-			className='absolute right-6 mt-2 z-50 w-[200px] rounded-lg shadow-md bg-white dark:bg-[var(--card-bg-dark)] border border-gray-200 dark:border-gray-600'>
+		<div className='w-[200px] rounded-lg shadow-md bg-white dark:bg-[var(--card-bg-dark)] border border-gray-200 dark:border-gray-600'>
 			<ul className='py-2 text-sm text-gray-700 dark:text-gray-200'>
 				{items.map((item, index) => (
 					<li key={index}>

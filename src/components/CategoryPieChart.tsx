@@ -115,7 +115,7 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ bucketId }) => {
 		<div className='w-full max-w-3xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow h-full'>
 			<div className='flex justify-between items-center mb-4'>
 				<h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
-					Expense Categories
+					My Expense
 				</h2>
 				<select
 					value={range}

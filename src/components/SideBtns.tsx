@@ -46,7 +46,7 @@ const SideBtns = () => {
 				<NavBtn
 					text='My Loans'
 					IconText={BsBank}
-					url='/my-loans'
+					url='#'
 				/>
 				<NavBtn
 					text='My Expenses'
@@ -56,7 +56,7 @@ const SideBtns = () => {
 				<NavBtn
 					text='Finance Overview'
 					IconText={GoTelescope}
-					url='/overview'
+					url='#'
 				/>
 			</div>
 			{/* SECOND LINK BOX */}

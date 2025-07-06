@@ -27,35 +27,62 @@ const IncomeTrendLineChart = () => {
 	const [chartData, setChartData] = useState<any[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [range, setRange] = useState<'week' | 'month'>('month');
+	const [currentBucket, setCurrentBucket] = useState<any>(null);
 
 	useEffect(() => {
 		if (!userProfile?.id) return;
 
 		const fetchData = async () => {
 			setLoading(true);
-			const income = userProfile.income || 0;
 
-			let start: Date;
-			const today = new Date();
-
-			if (range === 'week') start = startOfWeek(today, { weekStartsOn: 1 });
-			else if (range === 'month') start = startOfMonth(today);
-			else start = startOfYear(today);
-
-			const { data, error } = await supabase
-				.from('expenses')
-				.select('amount, spent_at')
+			// 1. Get latest active budget bucket
+			const { data: bucket, error: bucketError } = await supabase
+				.from('budget_buckets')
+				.select('*')
 				.eq('user_id', userProfile.id)
-				.gte('spent_at', start.toISOString().split('T')[0]);
+				.eq('status', 'open')
+				.order('start_date', { ascending: false })
+				.limit(1)
+				.single();
 
-			if (error) {
-				console.error('Error fetching expenses:', error.message);
+			if (bucketError || !bucket) {
+				console.error('Error fetching current bucket:', bucketError?.message);
 				setLoading(false);
 				return;
 			}
 
+			setCurrentBucket(bucket);
+			const income = bucket.total_income || 0;
+
+			// 2. Determine time range
+			let start: Date;
+			const today = new Date();
+
+			if (range === 'week') {
+				start = startOfWeek(today, { weekStartsOn: 1 });
+			} else if (range === 'month') {
+				start = startOfMonth(today);
+			} else {
+				start = startOfYear(today);
+			}
+
+			// 3. Get expenses for that bucket only
+			const { data: expenses, error: expenseError } = await supabase
+				.from('expenses')
+				.select('amount, spent_at')
+				.eq('user_id', userProfile.id)
+				.eq('bucket_id', bucket.id)
+				.gte('spent_at', start.toISOString().split('T')[0]);
+
+			if (expenseError) {
+				console.error('Error fetching expenses:', expenseError.message);
+				setLoading(false);
+				return;
+			}
+
+			// 4. Aggregate and transform
 			const expensesPerDay: Record<string, number> = {};
-			for (const row of data || []) {
+			for (const row of expenses || []) {
 				const day = format(new Date(row.spent_at), 'yyyy-MM-dd');
 				expensesPerDay[day] = (expensesPerDay[day] || 0) + Number(row.amount);
 			}
