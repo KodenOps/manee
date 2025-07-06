@@ -162,12 +162,6 @@ const Page = () => {
 
 								<div className='linkList mt-4 flex items-center md:justify-around justify-center md:gap-4 px-4 gap-2 w-full flex-wrap'>
 									<NavBox
-										IconName={FaMoneyBillTransfer}
-										boxText='Fund Transfer'
-										subtext='Send money to Friends'
-										url='/interbank'
-									/>
-									<NavBox
 										IconName={AiOutlinePieChart}
 										boxText='Personal Budgets'
 										subtext='Track monthly budget'
