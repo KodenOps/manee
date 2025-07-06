@@ -8,26 +8,35 @@ import { useBudget } from './BudgetContext';
 interface SetBudgetModalProps {
 	onClose: () => void;
 	onBudgetSaved?: () => void;
+	bucketId?: string;
 }
 
 const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 	onClose,
 	onBudgetSaved,
+	bucketId,
 }) => {
-	const { userProfile } = useUser();
+	const { userProfile, triggerSummaryRefresh } = useUser();
 	const { budgets, refetchBudgets } = useBudget();
-	const { triggerSummaryRefresh } = useUser();
+
 	const [selectedCategory, setSelectedCategory] = useState('');
 	const [selectedSubcategory, setSelectedSubcategory] = useState('');
 	const [amount, setAmount] = useState('');
 	const [customCategory, setCustomCategory] = useState('');
 	const [customSubcategory, setCustomSubcategory] = useState('');
 	const [income, setIncome] = useState<number | null>(null);
+	const [totalBudgeted, setTotalBudgeted] = useState<number>(0);
+	const [totalSpent, setTotalSpent] = useState<number>(0);
 	const [errorMsg, setErrorMsg] = useState('');
 
-	const totalBudgeted = budgets.reduce((acc, b) => acc + b.budget_amount, 0);
+	const [buckets, setBuckets] = useState<any[]>([]);
+	const [selectedBucket, setSelectedBucket] = useState<string | null>(
+		bucketId || null
+	);
+
 	const amountValue = Number(amount);
-	const remaining = income !== null ? income - totalBudgeted : null;
+	const remaining =
+		income !== null ? income - (totalBudgeted + totalSpent) : null;
 	const willExceed = remaining !== null && amountValue > remaining;
 	const nearLimit =
 		remaining !== null && amountValue >= 0.8 * remaining && !willExceed;
@@ -37,21 +46,73 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 	);
 	const subcategories = categoryObj?.subcategories ?? [];
 
-	// Fetch user income
 	useEffect(() => {
-		const fetchIncome = async () => {
+		const fetchData = async () => {
 			if (!userProfile?.id) return;
-			const { data, error } = await supabase
-				.from('profiles')
-				.select('income')
-				.eq('id', userProfile.id)
-				.single();
-			if (!error && data?.income !== undefined) {
-				setIncome(Number(data.income));
+
+			// ✅ FIX: Fetch total_income from the bucket
+			if (selectedBucket) {
+				const { data: bucketData } = await supabase
+					.from('budget_buckets')
+					.select('total_income')
+					.eq('id', selectedBucket)
+					.single();
+
+				if (bucketData?.total_income !== undefined) {
+					setIncome(Number(bucketData.total_income));
+				}
+
+				// Fetch total budgeted
+				const { data: budgetData } = await supabase
+					.from('budget_categories')
+					.select('budget_amount')
+					.eq('user_id', userProfile.id)
+					.eq('bucket_id', selectedBucket);
+
+				if (budgetData) {
+					const total = budgetData.reduce(
+						(acc, b) => acc + (b.budget_amount || 0),
+						0
+					);
+					setTotalBudgeted(total);
+				}
+
+				// Fetch total spent
+				const { data: expenseData } = await supabase
+					.from('expenses')
+					.select('amount')
+					.eq('user_id', userProfile.id)
+					.eq('bucket_id', selectedBucket);
+
+				if (expenseData) {
+					const totalSpent = expenseData.reduce(
+						(acc, e) => acc + (e.amount || 0),
+						0
+					);
+					setTotalSpent(totalSpent);
+				}
+			}
+
+			// Fetch buckets if bucketId wasn't passed
+			if (!bucketId) {
+				const { data: bucketData } = await supabase
+					.from('budget_buckets')
+					.select('*')
+					.eq('user_id', userProfile.id)
+					.eq('status', 'open')
+					.order('start_date', { ascending: false });
+
+				if (bucketData) {
+					setBuckets(bucketData);
+					if (bucketData.length > 0) {
+						setSelectedBucket(bucketData[0].id);
+					}
+				}
 			}
 		};
-		fetchIncome();
-	}, [userProfile?.id]);
+
+		fetchData();
+	}, [userProfile?.id, selectedBucket]);
 
 	const handleSave = async () => {
 		setErrorMsg('');
@@ -66,6 +127,7 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 			selectedCategory === '__custom__'
 				? customCategory
 				: selectedSubcategory || selectedCategory;
+
 		if (!category) {
 			setErrorMsg('Please select or enter a category');
 			return;
@@ -76,23 +138,28 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 			return;
 		}
 
+		if (!selectedBucket) {
+			setErrorMsg('Please select or create a budget bucket.');
+			return;
+		}
+
 		const { error } = await supabase.from('budget_categories').insert([
 			{
 				user_id: userProfile.id,
 				category,
 				budget_amount: amountValue,
+				bucket_id: selectedBucket,
 			},
 		]);
 
 		if (error) {
-			setErrorMsg('Error saving budget. Try again.');
 			console.error(error);
+			setErrorMsg('Error saving budget. Try again.');
 			return;
 		}
 
 		await refetchBudgets();
 		onBudgetSaved?.();
-		await refetchBudgets();
 		triggerSummaryRefresh();
 		onClose();
 	};
@@ -102,7 +169,26 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 			<div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg w-[90%] max-w-md p-6'>
 				<h2 className='text-xl font-semibold mb-4'>Set Budget</h2>
 
-				{/* Category Select */}
+				{/* Bucket Selector */}
+				{!bucketId && buckets.length > 0 && (
+					<label className='block mb-3'>
+						<span className='text-sm font-medium'>Budget Period</span>
+						<select
+							value={selectedBucket || ''}
+							onChange={(e) => setSelectedBucket(e.target.value)}
+							className='mt-1 w-full p-2 bg-gray-100 dark:bg-gray-700 rounded'>
+							{buckets.map((b) => (
+								<option
+									key={b.id}
+									value={b.id}>
+									{b.title}
+								</option>
+							))}
+						</select>
+					</label>
+				)}
+
+				{/* Category */}
 				<label className='block mb-3'>
 					<span className='text-sm font-medium'>Category</span>
 					<select
@@ -138,7 +224,7 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 					</label>
 				)}
 
-				{/* Subcategory (if not custom) */}
+				{/* Subcategory */}
 				{subcategories.length > 0 && selectedCategory !== '__custom__' && (
 					<label className='block mb-3'>
 						<span className='text-sm font-medium'>Subcategory</span>
@@ -158,26 +244,21 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 					</label>
 				)}
 
-				{/* Budget Amount Input */}
+				{/* Amount */}
 				<label className='block mb-3'>
 					<span className='text-sm font-medium'>Budget Amount (₦)</span>
 					<input
 						type='number'
 						min='0'
 						value={amount}
-						onChange={(e) => {
-							const val = e.target.value;
-							if (val === '' || Number(val) >= 0) {
-								setAmount(val);
-							}
-						}}
+						onChange={(e) => setAmount(e.target.value)}
 						className='mt-1 w-full p-2 bg-gray-100 dark:bg-gray-700 rounded'
 						placeholder='e.g. 20000'
 					/>
 				</label>
 
-				{/* Remaining Display */}
-				{income !== null && (
+				{/* Remaining income hint */}
+				{income !== null && selectedBucket && (
 					<div
 						className={`text-sm font-medium mb-2 ${
 							willExceed
@@ -187,17 +268,15 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 								: 'text-green-600'
 						}`}>
 						{willExceed
-							? `❌ Budget exceeds available income.`
-							: `You have ₦${(
-									income - totalBudgeted
-							  ).toLocaleString()} remaining`}
+							? `❌ This budget exceeds your remaining available balance.`
+							: `You have ₦${remaining?.toLocaleString()} remaining for this bucket`}
 					</div>
 				)}
 
 				{/* Error */}
 				{errorMsg && <p className='text-red-500 text-sm mb-2'>{errorMsg}</p>}
 
-				{/* Buttons */}
+				{/* Actions */}
 				<div className='flex justify-end gap-3 mt-4'>
 					<button
 						onClick={onClose}
@@ -206,7 +285,8 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
 					</button>
 					<button
 						onClick={handleSave}
-						className='px-4 py-2 rounded bg-blue-600 text-white'>
+						className='px-4 py-2 rounded bg-blue-600 text-white'
+						disabled={!selectedBucket}>
 						Save
 					</button>
 				</div>

@@ -1,15 +1,41 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import EditBudgetModal from '@/components/EditBudgetModal';
 import SetBudgetModal from '@/components/SetBudgetModal';
-import { useBudget, type BudgetCategory } from './BudgetContext';
+import supabase from '@/helper/supabaseClient';
+import { type BudgetCategory } from './BudgetContext';
 
-const BudgetGauge = () => {
-	const { budgets, loading, refetchBudgets } = useBudget();
+interface BudgetGaugeProps {
+	bucketId: string;
+}
+
+const BudgetGauge: React.FC<BudgetGaugeProps> = ({ bucketId }) => {
+	const [budgets, setBudgets] = useState<BudgetCategory[]>([]);
+	const [loading, setLoading] = useState(true);
 	const [selectedBudget, setSelectedBudget] = useState<BudgetCategory | null>(
 		null
 	);
-	const [showSetModal, setShowSetModal] = useState(false); // For "Create Budget"
+	const [showSetModal, setShowSetModal] = useState(false);
+
+	const fetchBudgets = async () => {
+		setLoading(true);
+		const { data, error } = await supabase
+			.from('budget_categories')
+			.select('*')
+			.eq('bucket_id', bucketId);
+
+		if (error) {
+			console.error('Failed to load budgets:', error.message);
+			setBudgets([]);
+		} else {
+			setBudgets(data || []);
+		}
+		setLoading(false);
+	};
+
+	useEffect(() => {
+		if (bucketId) fetchBudgets();
+	}, [bucketId]);
 
 	if (loading) {
 		return (
@@ -23,7 +49,7 @@ const BudgetGauge = () => {
 		return (
 			<div className='w-full text-center mt-24'>
 				<p className='text-gray-500 dark:text-gray-300 mb-4'>
-					No budgets created yet.
+					No budgets created yet for this bucket.
 				</p>
 				<button
 					onClick={() => setShowSetModal(true)}
@@ -33,10 +59,11 @@ const BudgetGauge = () => {
 
 				{showSetModal && (
 					<SetBudgetModal
+						bucketId={bucketId}
 						onClose={() => setShowSetModal(false)}
 						onBudgetSaved={() => {
-							refetchBudgets();
 							setShowSetModal(false);
+							fetchBudgets();
 						}}
 					/>
 				)}
@@ -79,14 +106,13 @@ const BudgetGauge = () => {
 				})}
 			</div>
 
-			{/* Edit Budget Modal */}
 			{selectedBudget && (
 				<EditBudgetModal
 					budget={selectedBudget}
 					onClose={() => setSelectedBudget(null)}
 					onUpdated={() => {
-						refetchBudgets();
 						setSelectedBudget(null);
+						fetchBudgets();
 					}}
 				/>
 			)}

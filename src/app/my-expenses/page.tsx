@@ -14,21 +14,21 @@ import BudgetGauge from '@/components/BudgetGuage';
 import WithAuthentication from '@/components/WithAuthentication';
 import CategoryPieChart from '@/components/CategoryPieChart';
 import IncomeTrendLineChart from '@/components/IncomeTrendLineChart';
+import supabase from '@/helper/supabaseClient';
 
 const Page = () => {
 	const { userProfile, loading } = useUser();
 
 	const [openMenu, setOpenMenu] = useState<string | null>(null);
 	const [showModal, setShowModal] = useState(false);
+	const [openBucketId, setOpenBucketId] = useState<string | null>(null);
 
-	// Refs for each menu
 	const financeMenuRef = useRef<HTMLDivElement | null>(null);
 	const expenseMenuRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			const target = event.target as Node;
-
 			if (openMenu === 'finance' && !financeMenuRef.current?.contains(target)) {
 				setOpenMenu(null);
 			} else if (
@@ -38,12 +38,32 @@ const Page = () => {
 				setOpenMenu(null);
 			}
 		};
-
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
 	}, [openMenu]);
+
+	useEffect(() => {
+		const fetchOpenBucket = async () => {
+			if (!userProfile?.id) return;
+			const now = new Date().toISOString();
+			const { data, error } = await supabase
+				.from('budget_buckets')
+				.select('id')
+				.eq('user_id', userProfile.id)
+				.eq('status', 'open')
+				.gte('end_date', now)
+				.order('created_at', { ascending: false })
+				.limit(1);
+			if (!error && data?.length) {
+				setOpenBucketId(data[0].id);
+			} else {
+				setOpenBucketId(null);
+			}
+		};
+		fetchOpenBucket();
+	}, [userProfile?.id]);
 
 	if (loading || !userProfile) {
 		return (
@@ -89,7 +109,7 @@ const Page = () => {
 
 				{/* Summary Cards */}
 				<div className='accountCards shadow-md md:px-[24px] px-[8px] gap-2 py-[16px] flex items-center md:justify-start justify-between overflow-x-auto'>
-					<BudgetSummary />
+					{openBucketId && <BudgetSummary bucketId={openBucketId} />}
 				</div>
 
 				{/* Expenses Overview Section */}
@@ -118,11 +138,12 @@ const Page = () => {
 						</div>
 					)}
 				</div>
+
 				{/* dashboards */}
 				<div className='p-4 flex flex-wrap md:flex-nowrap items-start justify-start gap-4'>
 					<div className='md:w-[400px] w-full mb-4'>
 						<div className='h-[400px]'>
-							<CategoryPieChart />
+							<CategoryPieChart bucketId={openBucketId} />
 						</div>
 					</div>
 					<div className='md:w-[400px] w-full mb-4'>

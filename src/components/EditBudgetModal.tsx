@@ -40,6 +40,7 @@ const EditBudgetModal = ({
 				amount: newAmount,
 				spent_at: spentAt,
 				description,
+				bucket_id: budget.bucket_id,
 			},
 		]);
 
@@ -72,15 +73,40 @@ const EditBudgetModal = ({
 
 	const handleDelete = async () => {
 		setDeleting(true);
-		const { error } = await supabase
+
+		// Step 1: Delete all related expenses for this budget
+		const { error: expenseDeleteError } = await supabase
+			.from('expenses')
+			.delete()
+			.eq('bucket_id', budget.bucket_id)
+			.eq('category', budget.category); // Assuming same category was saved
+
+		if (expenseDeleteError) {
+			console.error(
+				'Error deleting related expenses:',
+				expenseDeleteError.message
+			);
+			setError('Failed to delete related expenses.');
+			setDeleting(false);
+			return;
+		}
+
+		// Step 2: Delete the budget itself
+		const { error: budgetDeleteError } = await supabase
 			.from('budget_categories')
 			.delete()
 			.eq('id', budget.id);
+
 		await refetchBudgets();
 		triggerSummaryRefresh();
 		setDeleting(false);
-		if (!error) onUpdated();
-		else console.error('Delete error:', error.message);
+
+		if (!budgetDeleteError) {
+			onUpdated();
+		} else {
+			console.error('Delete error:', budgetDeleteError.message);
+			setError('Failed to delete budget.');
+		}
 	};
 
 	return (
@@ -112,8 +138,8 @@ const EditBudgetModal = ({
 					<input
 						type='date'
 						value={spentAt}
-						onChange={(e) => setSpentAt(e.target.value)}
-						className='mt-1 w-full p-2 rounded bg-gray-100 dark:bg-gray-700'
+						disabled
+						className='mt-1 w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-500'
 					/>
 				</label>
 

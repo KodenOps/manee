@@ -5,12 +5,14 @@ import { useUser } from './UserContext';
 
 interface EditIncomeModalProps {
 	initialIncome: number;
+	bucketId?: string; // 👈 New
 	onClose: () => void;
 	onSaved: () => void;
 }
 
 const EditIncomeModal: React.FC<EditIncomeModalProps> = ({
 	initialIncome,
+	bucketId,
 	onClose,
 	onSaved,
 }) => {
@@ -19,19 +21,39 @@ const EditIncomeModal: React.FC<EditIncomeModalProps> = ({
 	const { userProfile } = useUser();
 
 	const handleSave = async () => {
-		if (!userProfile?.id || isNaN(Number(income)) || Number(income) < 0) return;
+		if (isNaN(Number(income)) || Number(income) < 0) return;
 
 		setSaving(true);
 
-		const { error } = await supabase
-			.from('profiles')
-			.update({ income: Number(income) })
-			.eq('id', userProfile.id);
+		let error;
+
+		if (bucketId) {
+			// 🔁 Update budget_buckets instead of profiles
+			const { error: bucketError } = await supabase
+				.from('budget_buckets')
+				.update({ total_income: Number(income) })
+				.eq('id', bucketId);
+
+			error = bucketError;
+		} else {
+			// 🔁 Update profiles table for user-level income
+			if (!userProfile?.id) {
+				setSaving(false);
+				return;
+			}
+
+			const { error: profileError } = await supabase
+				.from('profiles')
+				.update({ income: Number(income) })
+				.eq('id', userProfile.id);
+
+			error = profileError;
+		}
 
 		setSaving(false);
 
 		if (!error) {
-			onSaved(); // Triggers refetch and closes modal
+			onSaved();
 		} else {
 			console.error('Failed to update income:', error.message);
 		}

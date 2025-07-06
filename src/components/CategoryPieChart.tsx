@@ -9,13 +9,7 @@ import {
 	ResponsiveContainer,
 } from 'recharts';
 import { useEffect, useState } from 'react';
-import {
-	format,
-	startOfDay,
-	startOfWeek,
-	startOfMonth,
-	startOfYear,
-} from 'date-fns';
+import { startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
 import supabase from '@/helper/supabaseClient';
 import { useUser } from './UserContext';
 
@@ -30,6 +24,10 @@ const COLORS = [
 
 const timeRanges = ['Today', 'This Week', 'This Month', 'This Year'] as const;
 type TimeRange = (typeof timeRanges)[number];
+
+interface CategoryPieChartProps {
+	bucketId: string | null;
+}
 
 // ✅ Custom tooltip
 const CustomTooltip = ({
@@ -54,7 +52,7 @@ const CustomTooltip = ({
 	return null;
 };
 
-const CategoryPieChart = () => {
+const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ bucketId }) => {
 	const { userProfile } = useUser();
 	const [range, setRange] = useState<TimeRange>('This Month');
 	const [chartData, setChartData] = useState<any[]>([]);
@@ -76,7 +74,7 @@ const CategoryPieChart = () => {
 	};
 
 	useEffect(() => {
-		if (!userProfile?.id) return;
+		if (!userProfile?.id || !bucketId) return;
 
 		const fetchData = async () => {
 			setLoading(true);
@@ -86,6 +84,7 @@ const CategoryPieChart = () => {
 				.from('expenses')
 				.select('category, amount')
 				.eq('user_id', userProfile.id)
+				.eq('bucket_id', bucketId)
 				.gte('spent_at', fromDate);
 
 			if (error) {
@@ -110,7 +109,7 @@ const CategoryPieChart = () => {
 		};
 
 		fetchData();
-	}, [range, userProfile?.id]);
+	}, [range, userProfile?.id, bucketId]);
 
 	return (
 		<div className='w-full max-w-3xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow h-full'>
@@ -140,9 +139,7 @@ const CategoryPieChart = () => {
 				<ResponsiveContainer
 					width='100%'
 					height={300}>
-					<PieChart
-						margin={{ top: 10, right: 10, bottom: 10, left: 10 }} // Add more margin
-					>
+					<PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
 						<Pie
 							dataKey='value'
 							isAnimationActive
