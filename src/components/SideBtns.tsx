@@ -28,11 +28,11 @@ const SideBtns = () => {
 				<h4 className='px-[24px] font-medium text-sm mt-8 mb-4 tracking-wider text-[var(--primary)] dark:text-[var(--secondary-dark)]'>
 					MY FINANCE
 				</h4>
-				<NavBtn
+				{/* <NavBtn
 					text='Transfers'
 					IconText={FaMoneyBillTransfer}
 					url='/interbank'
-				/>
+				/> */}
 				<NavBtn
 					text='My Goals'
 					IconText={GiPayMoney}
